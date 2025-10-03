@@ -12,6 +12,7 @@ async function apiFetch<T>(
 
   const response = await fetch(getApiUrl(endpoint), {
     ...rest,
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
       ...headers,
@@ -20,16 +21,21 @@ async function apiFetch<T>(
   });
 
   if (!response.ok) {
+    if (response.status === 401 && typeof window !== "undefined") {
+      window.location.href = "/auth/login";
+      throw new Error("Sessão expirada. Redirecionando para login.");
+    }
+
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.message || "Erro na requisição");
   }
 
-  return response.json();
+  return response.json().catch(() => ({})) as Promise<T>;
 }
 
 export const twiiApi = {
   login: (data: { usernameOrEmail: string; password: string }) =>
-    apiFetch<{ token: string }>(API_CONFIG.ENDPOINTS.LOGIN, {
+    apiFetch<void>(API_CONFIG.ENDPOINTS.LOGIN, {
       method: "POST",
       body: data,
     }),
@@ -51,4 +57,10 @@ export const twiiApi = {
       method: "POST",
       body: { email },
     }),
+
+  findAllUsers: () =>
+    apiFetch(API_CONFIG.ENDPOINTS.FIND_ALL_USERS, { method: "GET" }),
+
+  findAllPosts: () =>
+    apiFetch(API_CONFIG.ENDPOINTS.FIND_ALL_POSTS, { method: "GET" }),
 };

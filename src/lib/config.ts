@@ -5,10 +5,12 @@ export const API_CONFIG = {
     REGISTER: "/auth/register",
     VERIFY_EMAIL: "/auth/verify-email",
     RESEND_VERIFICATION: "/auth/resend-verification",
+    FIND_ALL_USERS: "/users",
+
+    FIND_ALL_POSTS: "/posts",
   },
 } as const;
 
 export const getApiUrl = (endpoint: string) => {
   return `${API_CONFIG.BASE_URL}${endpoint}`;
 };
-
