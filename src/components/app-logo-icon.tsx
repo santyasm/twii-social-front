@@ -4,8 +4,8 @@ export default function AppLogoIcon(props: SVGAttributes<SVGElement>) {
   return (
     <svg
       {...props}
-      width="90"
-      height="90"
+      width="40"
+      height="40"
       viewBox="0 0 95 95"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
