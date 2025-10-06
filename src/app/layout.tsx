@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-// @ts-expect-error: TypeScript does not recognize CSS imports by default
-import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/hooks/auth/use-auth";
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
