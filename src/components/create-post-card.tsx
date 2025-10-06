@@ -3,19 +3,30 @@
 import { useState, useRef, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Button } from "./ui/button";
-import { Image as LImage } from "lucide-react";
+import { Image as LImage, X } from "lucide-react";
 import { User } from "@/@types/users";
+import { twiiApi } from "@/lib/twii-api";
+import { toast } from "sonner";
 
 const MAX_CHARS = 280;
 const WARNING_THRESHOLD = 10;
 
-export default function CreatePostCard({ user }: { user: User }) {
+export function CreatePostCard({
+  user,
+  onPostCreated,
+}: {
+  user: User;
+  onPostCreated?: () => void;
+}) {
   const [content, setContent] = useState("");
+  const [image, setImage] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const charCount = content.length;
   const charsRemaining = MAX_CHARS - charCount;
-
   const isWarning = charsRemaining <= WARNING_THRESHOLD && charsRemaining >= 0;
   const isOverLimit = charsRemaining < 0;
 
@@ -23,7 +34,6 @@ export default function CreatePostCard({ user }: { user: User }) {
     const textarea = textareaRef.current;
     if (textarea) {
       textarea.style.height = "auto";
-
       textarea.style.height = `${textarea.scrollHeight}px`;
     }
   }, [content]);
@@ -32,17 +42,49 @@ export default function CreatePostCard({ user }: { user: User }) {
     setContent(e.target.value);
   };
 
-  let counterStyle = "text-gray-400";
-  if (isWarning) {
-    counterStyle = "text-yellow-500";
-  }
-  if (isOverLimit) {
-    counterStyle = "text-red-500 font-bold";
-  }
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImage(file);
+      setPreview(URL.createObjectURL(file));
+    }
+  };
 
-  if (!!!user) {
-    return;
-  }
+  const handleRemoveImage = () => {
+    setImage(null);
+    setPreview(null);
+  };
+
+  const handleSubmit = async () => {
+    if (!content.trim()) {
+      toast.error("O conteúdo do post é obrigatório.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("content", content);
+    if (image) formData.append("image", image);
+
+    try {
+      setLoading(true);
+      await twiiApi.createPost(formData);
+      toast.success("Post criado com sucesso!");
+      setContent("");
+      setImage(null);
+      setPreview(null);
+      onPostCreated?.();
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao criar post.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  let counterStyle = "text-gray-400";
+  if (isWarning) counterStyle = "text-yellow-500";
+  if (isOverLimit) counterStyle = "text-red-500 font-bold";
+
+  if (!user) return null;
 
   return (
     <div className="bg-[#2d2d2d] dark:bg-[#2d2d2d] rounded-2xl p-4 mb-6">
@@ -71,16 +113,38 @@ export default function CreatePostCard({ user }: { user: User }) {
         />
       </div>
 
+      {preview && (
+        <div className="relative mb-3">
+          <img
+            src={preview}
+            alt="Preview da imagem"
+            className="w-full max-h-96 object-cover rounded-xl border border-white/10"
+          />
+          <button
+            type="button"
+            onClick={handleRemoveImage}
+            className="absolute top-2 right-2 bg-black/60 hover:bg-black/80 rounded-full p-1"
+          >
+            <X className="w-4 h-4 text-white" />
+          </button>
+        </div>
+      )}
+
       <div className="border-t border-white/10 pt-4 flex items-center justify-between">
-        <div className="flex gap-4">
-          <button className="flex items-center gap-2 text-gray-400 hover:text-gray-300 transition-colors">
+        <div className="flex gap-4 items-center">
+          <label className="flex items-center gap-2 text-gray-400 hover:text-gray-300 transition-colors cursor-pointer">
             <LImage className="w-4 h-4" />
             <span className="text-xs">Media Content</span>
-          </button>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+            />
+          </label>
         </div>
 
         <div className="flex items-center gap-4">
-          {/* INDICADOR DE CONTAGEM REGRESSIVA */}
           {(isWarning || isOverLimit) && (
             <div
               className={`w-6 h-6 rounded-full flex items-center justify-center border ${counterStyle} border-current text-xs`}
@@ -95,12 +159,10 @@ export default function CreatePostCard({ user }: { user: User }) {
 
           <Button
             className="bg-gray-600 hover:bg-gray-700 text-white px-6 h-9 rounded-lg"
-            disabled={charCount === 0 || isOverLimit}
-            onClick={() => {
-              console.log("Postando:", content);
-            }}
+            disabled={charCount === 0 || isOverLimit || loading}
+            onClick={handleSubmit}
           >
-            Post
+            {loading ? "Postando..." : "Post"}
           </Button>
         </div>
       </div>
