@@ -30,18 +30,23 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          storageKey="twii-ui-theme"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <AuthProvider>
-            {children}
-            <Toaster />
-          </AuthProvider>
-        </ThemeProvider>
+        <div className="px-3 px-4 md:px-6 lg:px-8 xl:px-10
+            py-3 py-4 
+            min-h-screen
+          ">
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            storageKey="twii-ui-theme"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <AuthProvider>
+              {children}
+              <Toaster />
+            </AuthProvider>
+          </ThemeProvider>
+        </div>
       </body>
     </html>
   );

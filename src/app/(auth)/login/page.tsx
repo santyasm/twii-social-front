@@ -110,7 +110,7 @@ export default function LoginPage() {
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Não tem uma conta?{" "}
               <Link
-                href="/auth/register"
+                href="/register"
                 className="font-medium text-primary hover:text-primary/80 transition-colors"
               >
                 Registre-se aqui

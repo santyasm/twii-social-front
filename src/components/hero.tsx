@@ -14,13 +14,13 @@ export default function Hero() {
 
       <div className="flex flex-col sm:flex-row gap-4 mt-6 md:mt-8 w-full sm:w-auto">
         <Link
-          href="/auth/login"
+          href="/login"
           className="px-6 py-3 bg-primary text-gray-900 rounded-lg font-semibold hover:bg-primary/90 transition-colors text-center w-full sm:w-40"
         >
           Entrar
         </Link>
         <Link
-          href="/auth/register"
+          href="/register"
           className="px-6 py-3 border border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-gray-900 transition-colors text-center w-full sm:w-40"
         >
           Criar Conta

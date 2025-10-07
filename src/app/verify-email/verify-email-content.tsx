@@ -27,7 +27,7 @@ const VerifyEmailPage: React.FC = () => {
       try {
         const response = await fetch(
           getApiUrl(API_CONFIG.ENDPOINTS.VERIFY_EMAIL) +
-            `?token=${encodeURIComponent(token)}`,
+          `?token=${encodeURIComponent(token)}`,
           { method: "GET", headers: { "Content-Type": "application/json" } }
         );
 
@@ -39,7 +39,7 @@ const VerifyEmailPage: React.FC = () => {
           setStatus("error");
           setMessage(
             errorData.message ||
-              "Falha na verificação do email. Tente novamente."
+            "Falha na verificação do email. Tente novamente."
           );
         }
       } catch {
@@ -107,7 +107,7 @@ const VerifyEmailPage: React.FC = () => {
 
         <div className="flex flex-col space-y-4">
           <Link
-            href="/auth/login"
+            href="/login"
             className={`${buttonClass} bg-primary text-white hover:bg-primary/90`}
           >
             Ir para o Login

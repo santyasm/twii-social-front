@@ -1,9 +1,13 @@
+"use client";
+
+import Link from "next/link";
 import { Search, Mic, UserPlus } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import Footer from "./footer";
 import { User } from "@/@types/users";
 import { useEffect, useState } from "react";
 import { twiiApi } from "@/lib/twii-api";
+import clsx from "clsx";
 
 export function RightSidebar() {
   const [users, setUsers] = useState<User[]>([]);
@@ -26,43 +30,25 @@ export function RightSidebar() {
     fetchUsers();
   }, []);
 
-  const suggestions = [
-    {
-      id: 1,
-      name: "Alex Bishop",
-      subtitle: "Coach, swim, reptball & 2...",
-      avatar:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop",
-    },
-    {
-      id: 2,
-      name: "Bella Bean",
-      subtitle: "🍓 Savoring every flavor the...",
-      avatar:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop",
-    },
-    {
-      id: 3,
-      name: "Tyra Dhillon",
-      subtitle: "Style is a way to express w...",
-      avatar:
-        "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop",
-    },
-    {
-      id: 4,
-      name: "Adam Hayes",
-      subtitle: "🎬 Cutting peace in the bas...",
-      avatar:
-        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop",
-    },
-  ];
 
   return (
-    <div className="w-[340px]">
+    <aside
+      className={clsx(
+        "hidden sm:flex flex-col",
+        "bg-card",
+        "rounded-2xl shadow-md",
+        "p-3 md:p-4",
+        "w-[22vw] lg:w-[23vw]",
+        "fixed right-4 top-4",
+        "z-30",
+        "overflow-y-auto",
+        "transition-all duration-300",
+      )}
+    >
       {/* Search */}
-      <div className="bg-[#2d2d2d] dark:bg-[#2d2d2d] rounded-2xl p-4 mb-4">
+      <div className="rounded-2xl p-4 mb-4">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-white">Search</h3>
+          <h3>Search</h3>
         </div>
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
@@ -76,9 +62,9 @@ export function RightSidebar() {
           </button>
         </div>
         {/* Suggestions */}
-        <div className="bg-[#2d2d2d] dark:bg-[#2d2d2d] rounded-2xl p-4 mb-4">
+        <div className="p-4 mb-4">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-white">Sugestões</h3>
+            <h3>Sugestões</h3>
             <button className="text-gray-400 hover:text-gray-300 text-xs">
               Ver todos
             </button>
@@ -88,11 +74,13 @@ export function RightSidebar() {
             {users.slice(0, 5).map((user) => (
               <div key={user.id} className="flex items-center gap-3 group">
                 <Avatar className="w-10 h-10">
-                  <AvatarImage src={user.avatarUrl} />
-                  <AvatarFallback>{user.name[0]}</AvatarFallback>
+                  <Link href={`/${user.username}`}>
+                    <AvatarImage src={user.avatarUrl} />
+                    <AvatarFallback>{user.name[0]}</AvatarFallback>
+                  </Link>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <p className="text-white text-sm truncate">{user.name}</p>
+                  <p className="text-sm truncate">{user.name}</p>
                   <p className="text-gray-400 text-xs truncate">
                     @{user?.username}
                   </p>
@@ -106,6 +94,6 @@ export function RightSidebar() {
         </div>
         <Footer />
       </div>
-    </div>
+    </aside>
   );
 }

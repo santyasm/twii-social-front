@@ -79,4 +79,9 @@ export const twiiApi = {
       body: data,
       isFormData: true,
     }),
+
+    findUserByUsername: (username: string) =>
+    apiFetch<User>(API_CONFIG.ENDPOINTS.FIND_USER_BY_USERNAME(username), {
+      method: "GET",
+    }),
 };

@@ -7,6 +7,7 @@ import { Image as LImage, X } from "lucide-react";
 import { User } from "@/@types/users";
 import { twiiApi } from "@/lib/twii-api";
 import { toast } from "sonner";
+import { getInitials } from "@/utils/string-formatter";
 
 const MAX_CHARS = 280;
 const WARNING_THRESHOLD = 10;
@@ -56,7 +57,7 @@ export function CreatePostCard({
   };
 
   const handleSubmit = async () => {
-    if (!content.trim()) {
+    if (!content.trim() && !image) {
       toast.error("O conteúdo do post é obrigatório.");
       return;
     }
@@ -87,17 +88,12 @@ export function CreatePostCard({
   if (!user) return null;
 
   return (
-    <div className="bg-[#2d2d2d] dark:bg-[#2d2d2d] rounded-2xl p-4 mb-6">
+    <div className="bg-card rounded-2xl p-4 mb-6 shadow-md">
       <div className="flex gap-3 mb-4">
         <Avatar className="w-10 h-10">
           <AvatarImage src={user?.avatarUrl} className="rounded-full" />
           <AvatarFallback>
-            {user.name
-              .split(" ")
-              .map((n) => n[0])
-              .join("")
-              .toUpperCase()
-              .slice(0, 2)}
+            {getInitials(user.name)}
           </AvatarFallback>
         </Avatar>
 
@@ -159,7 +155,7 @@ export function CreatePostCard({
 
           <Button
             className="bg-gray-600 hover:bg-gray-700 text-white px-6 h-9 rounded-lg"
-            disabled={charCount === 0 || isOverLimit || loading}
+            disabled={(charCount === 0 && !image) || isOverLimit || loading}
             onClick={handleSubmit}
           >
             {loading ? "Postando..." : "Post"}
