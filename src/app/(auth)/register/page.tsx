@@ -101,7 +101,7 @@ export default function RegisterPage() {
             </p>
             <div className="mt-6">
               <Link
-                href="/auth/login"
+                href="/login"
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
               >
                 Ir para Login
@@ -243,7 +243,7 @@ export default function RegisterPage() {
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Já tem uma conta?{" "}
               <Link
-                href="/auth/login"
+                href="/login"
                 className="font-medium text-primary hover:text-primary/80 transition-colors"
               >
                 Faça login aqui
