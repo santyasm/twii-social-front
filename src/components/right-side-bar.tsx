@@ -8,6 +8,7 @@ import { User } from "@/@types/users";
 import { useEffect, useState } from "react";
 import { twiiApi } from "@/lib/twii-api";
 import clsx from "clsx";
+import { getInitials } from "@/utils/string-formatter";
 
 export function RightSidebar() {
   const [users, setUsers] = useState<User[]>([]);
@@ -30,7 +31,6 @@ export function RightSidebar() {
     fetchUsers();
   }, []);
 
-
   return (
     <aside
       className={clsx(
@@ -42,7 +42,7 @@ export function RightSidebar() {
         "fixed right-4 top-4",
         "z-30",
         "overflow-y-auto",
-        "transition-all duration-300",
+        "transition-all duration-300"
       )}
     >
       {/* Search */}
@@ -73,12 +73,12 @@ export function RightSidebar() {
           <div className="space-y-3">
             {users.slice(0, 5).map((user) => (
               <div key={user.id} className="flex items-center gap-3 group">
-                <Avatar className="w-10 h-10">
-                  <Link href={`/${user.username}`}>
+                <Link href={`/${user.username}`}>
+                  <Avatar className="w-10 h-10 bg-gray-300">
                     <AvatarImage src={user.avatarUrl} />
-                    <AvatarFallback>{user.name[0]}</AvatarFallback>
-                  </Link>
-                </Avatar>
+                    <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+                  </Avatar>
+                </Link>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm truncate">{user.name}</p>
                   <p className="text-gray-400 text-xs truncate">

@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import ProfileClient from "./profile-client";
+import { twiiApi } from "@/lib/twii-api";
 
-// se o seu backend estiver online (produção), use a URL absoluta:
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.twii.com";
 
 export async function generateMetadata({
   params,
@@ -12,19 +11,15 @@ export async function generateMetadata({
   const username = params.username;
 
   try {
-    const res = await fetch(`${API_BASE}/users/${username}`, {
-      cache: "no-store",
-    });
+    const user = await twiiApi.findUserByUsername(username);
 
-    if (!res.ok) {
+    if (!user) {
       return {
         title: "Usuário não encontrado • Twii",
         description: "O perfil solicitado não existe no Twii.",
         openGraph: { images: ["/og.png"] },
       };
     }
-
-    const user = await res.json();
 
     const title = `${user.name} (@${user.username}) • Twii`;
     const description = user.bio || "Veja as publicações e perfil no Twii.";

@@ -12,15 +12,13 @@ export default function HomePageClient() {
         pb-12
       "
     >
-      {/* Feed principal */}
       <MainFeed />
 
-      {/* Sidebar direita */}
       <aside
         className="
           hidden xl:block
           w-[310px]
-          lg:w-[350px]
+          lg:w-[23vw]
           flex-shrink-0
         "
       >

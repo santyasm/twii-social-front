@@ -27,17 +27,8 @@ export function MainFeed() {
 
   return (
     <div className="w-full mx-auto flex flex-col">
-      {/* Criar Post */}
       {user && <CreatePostCard user={user} />}
 
-      {/* Opções de filtro */}
-      {/* <div className="flex justify-end">
-        <button className="text-xs text-gray-400 hover:text-gray-300">
-          Sort by: Following ▾
-        </button>
-      </div> */}
-
-      {/* Lista de posts */}
       <div className="flex flex-col gap-4 pb-10">
         {posts.length > 0 ? (
           posts.map((post) => <PostCard key={post.id} {...post} />)

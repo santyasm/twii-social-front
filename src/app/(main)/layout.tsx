@@ -7,7 +7,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 <LeftSidebar />
             </div>
 
-            <div className="sm:w-[80px] md:w-[90px] lg:w-[250px] flex-shrink-0 hidden sm:block" />
+            <div className="sm:w-[96px] md:w-[100px] lg:w-[250px] flex-shrink-0 hidden sm:block" />
 
             <main className="flex-1 flex justify-center">
                 {children}
