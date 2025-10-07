@@ -26,10 +26,14 @@ async function apiFetch<T>(
 
     if (!response.ok) {
       if (response.status === 401 && typeof window !== "undefined") {
-        if (!skipAuthRedirect) {
+        const isLoginPage = window.location.pathname === "/";
+
+        if (!skipAuthRedirect && !isLoginPage) {
           localStorage.removeItem("twii-user");
+
           window.location.href = "/";
         }
+
         throw new Error("Sessão expirada. Faça login novamente.");
       }
 
@@ -44,7 +48,9 @@ async function apiFetch<T>(
     return {} as T;
   } catch (error) {
     console.error(`[twiiApi] ${endpoint} →`, error);
-    throw error instanceof Error ? error : new Error("Erro desconhecido na API");
+    throw error instanceof Error
+      ? error
+      : new Error("Erro desconhecido na API");
   }
 }
 
@@ -76,7 +82,9 @@ export const twiiApi = {
 
   me: async () => {
     if (cachedUser) return cachedUser;
-    const user = await apiFetch<User>(API_CONFIG.ENDPOINTS.ME, { method: "GET" });
+    const user = await apiFetch<User>(API_CONFIG.ENDPOINTS.ME, {
+      method: "GET",
+    });
     cachedUser = user;
     return user;
   },
