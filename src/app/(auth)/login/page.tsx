@@ -4,8 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import { twiiApi } from "@/lib/twii-api";
 import AppLogoIcon from "@/components/app-logo-icon";
+import { useAuth } from "@/hooks/auth/use-auth";
 
 export default function LoginPage() {
+  const { login } = useAuth();
+
   const [formData, setFormData] = useState({
     usernameOrEmail: "",
     password: "",
@@ -19,8 +22,8 @@ export default function LoginPage() {
     setError("");
 
     try {
-      await twiiApi.login(formData);
-      window.location.href = "/";
+      await login(formData);
+
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro desconhecido");
     } finally {

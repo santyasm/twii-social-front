@@ -15,6 +15,9 @@ export const API_CONFIG = {
   },
 } as const;
 
+
 export const getApiUrl = (endpoint: string) => {
-  return `${API_CONFIG.BASE_URL}${endpoint}`;
+  const base = API_CONFIG.BASE_URL.replace(/\/$/, "");
+  const path = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  return `${base}${path}`;
 };
