@@ -16,7 +16,7 @@ async function apiFetch<T>(
   try {
     const response = await fetch(getApiUrl(endpoint), {
       ...rest,
-      credentials: "include", // 👈 garante envio de cookies no mesmo domínio
+      credentials: "include",
       headers: {
         ...(isFormData ? {} : { "Content-Type": "application/json" }),
         ...headers,
@@ -52,6 +52,8 @@ async function apiFetch<T>(
 /*                                   API CALLS                                */
 /* -------------------------------------------------------------------------- */
 
+let cachedUser: User | null = null;
+
 export const twiiApi = {
   register: (data: { username: string; email: string; password: string }) =>
     apiFetch(API_CONFIG.ENDPOINTS.REGISTER, {
@@ -72,7 +74,12 @@ export const twiiApi = {
       method: "POST",
     }),
 
-  me: () => apiFetch<User>(API_CONFIG.ENDPOINTS.ME, { method: "GET" }),
+  me: async () => {
+    if (cachedUser) return cachedUser;
+    const user = await apiFetch<User>(API_CONFIG.ENDPOINTS.ME, { method: "GET" });
+    cachedUser = user;
+    return user;
+  },
 
   verifyEmail: (token: string) =>
     apiFetch(API_CONFIG.ENDPOINTS.VERIFY_EMAIL, {
