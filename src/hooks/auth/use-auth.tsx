@@ -40,10 +40,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     try {
       await twiiApi.login(credentials);
-      await fetchCurrentUser();
+
+      const userData = await twiiApi.me();
+      setUser(userData);
+      localStorage.setItem("twii-user", JSON.stringify(userData));
 
       toast.success("Login realizado com sucesso!");
-      window.location.href = "/home";
+      router.push("/home");
     } catch (error) {
       toast.info("Erro ao fazer login. Verifique suas credenciais.");
       setUser(null);

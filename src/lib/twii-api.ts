@@ -11,7 +11,7 @@ async function apiFetch<T>(
   endpoint: string,
   options: ApiOptions = {}
 ): Promise<T> {
-  const { body, headers, isFormData, skipAuthRedirect, ...rest } = options;
+  const { body, headers, isFormData, ...rest } = options;
 
   try {
     const response = await fetch(getApiUrl(endpoint), {
@@ -25,15 +25,8 @@ async function apiFetch<T>(
     });
 
     if (!response.ok) {
-      if (response.status === 401 && typeof window !== "undefined") {
-        const isLoginPage = window.location.pathname === "/";
-
-        if (!skipAuthRedirect && !isLoginPage) {
-          localStorage.removeItem("twii-user");
-
-          window.location.href = "/";
-        }
-
+      if (response.status === 401) {
+        // apenas lança erro de sessão expirada
         throw new Error("Sessão expirada. Faça login novamente.");
       }
 
@@ -45,6 +38,7 @@ async function apiFetch<T>(
     if (contentType && contentType.includes("application/json")) {
       return (await response.json()) as T;
     }
+
     return {} as T;
   } catch (error) {
     console.error(`[twiiApi] ${endpoint} →`, error);
@@ -65,14 +59,12 @@ export const twiiApi = {
     apiFetch(API_CONFIG.ENDPOINTS.REGISTER, {
       method: "POST",
       body: data,
-      skipAuthRedirect: true,
     }),
 
   login: (data: { usernameOrEmail: string; password: string }) =>
     apiFetch<void>(API_CONFIG.ENDPOINTS.LOGIN, {
       method: "POST",
       body: data,
-      skipAuthRedirect: true,
     }),
 
   logout: () =>
@@ -93,14 +85,12 @@ export const twiiApi = {
     apiFetch(API_CONFIG.ENDPOINTS.VERIFY_EMAIL, {
       method: "POST",
       body: { token },
-      skipAuthRedirect: true,
     }),
 
   resendVerification: (email: string) =>
     apiFetch(API_CONFIG.ENDPOINTS.RESEND_VERIFICATION, {
       method: "POST",
       body: { email },
-      skipAuthRedirect: true,
     }),
 
   findAllUsers: () =>
