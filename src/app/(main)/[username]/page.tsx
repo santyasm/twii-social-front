@@ -1,80 +1,68 @@
-"use client";
+import type { Metadata } from "next";
+import ProfileClient from "./profile-client";
 
-import { useAuth } from "@/hooks/auth/use-auth";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { twiiApi } from "@/lib/twii-api";
-import { User } from "@/@types/users";
-import ProfileCard from "@/components/profile-card";
-import { RightSidebar } from "@/components/right-side-bar";
-import { PostCard } from "@/components/post-card";
+// se o seu backend estiver online (produção), use a URL absoluta:
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.twii.com";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { username: string };
+}): Promise<Metadata> {
+  const username = params.username;
+
+  try {
+    const res = await fetch(`${API_BASE}/users/${username}`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      return {
+        title: "Usuário não encontrado • Twii",
+        description: "O perfil solicitado não existe no Twii.",
+        openGraph: { images: ["/og.png"] },
+      };
+    }
+
+    const user = await res.json();
+
+    const title = `${user.name} (@${user.username}) • Twii`;
+    const description = user.bio || "Veja as publicações e perfil no Twii.";
+
+    return {
+      title,
+      description,
+      openGraph: {
+        title,
+        description,
+        type: "profile",
+        url: `https://twii.vercel.app/${user.username}`,
+        images: [
+          {
+            url: user.avatarUrl || "/og.png",
+            width: 1200,
+            height: 630,
+            alt: `${user.name} profile image`,
+          },
+        ],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+        images: [user.avatarUrl || "/og.png"],
+      },
+    };
+  } catch (error) {
+    console.error("Erro ao gerar metadata:", error);
+    return {
+      title: "Erro ao carregar perfil • Twii",
+      description: "Ocorreu um erro ao tentar carregar o perfil.",
+      openGraph: { images: ["/og.png"] },
+    };
+  }
+}
 
 export default function ProfilePage() {
-  const { username: routeUsername } = useParams() as { username: string };
-  const { user: currentUser, isLoading: isAuthLoading } = useAuth();
-
-  const [viewedUser, setViewedUser] = useState<User | null>(null);
-  const [isProfileLoading, setIsProfileLoading] = useState(true);
-
-  const isMyProfile = currentUser?.username === routeUsername;
-
-  useEffect(() => {
-    if (!routeUsername) return;
-
-    const fetchProfile = async () => {
-      setIsProfileLoading(true);
-      try {
-        const userData = await twiiApi.findUserByUsername(routeUsername);
-
-        setViewedUser(userData);
-      } catch {
-        setViewedUser(null);
-      } finally {
-        setIsProfileLoading(false);
-      }
-    };
-
-    fetchProfile();
-  }, [routeUsername]);
-
-  if (isAuthLoading || isProfileLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-[50vh]">
-        <p className="text-lg text-gray-500 dark:text-gray-300">Carregando perfil...</p>
-      </div>
-    );
-  }
-
-  if (!viewedUser) {
-    return (
-      <div className="text-center mt-12">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Usuário não encontrado</h1>
-        <p className="text-gray-500 dark:text-gray-400">
-          O perfil que você está tentando acessar não existe.
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-col flex-row justify-center w-full gap-6">
-      <main className="flex-1 flex flex-col gap-4">
-        <ProfileCard user={viewedUser} />
-
-        {viewedUser.Post && viewedUser.Post.length > 0 ? (
-          viewedUser.Post.map((post) => (
-            <PostCard key={post.id} {...post} author={viewedUser} />
-          ))
-        ) : (
-          <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-10">
-            Nenhum post encontrado.
-          </p>
-        )}
-      </main>
-
-      <aside className="hidden xl:block w-[21.5vw] flex-shrink-0">
-        <RightSidebar />
-      </aside>
-    </div>
-  );
+  return <ProfileClient />;
 }
