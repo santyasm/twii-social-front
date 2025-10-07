@@ -13,24 +13,16 @@ import { useEffect, useState } from "react";
 export function LeftSidebar() {
   const { user, logout } = useAuth();
   const pathname = usePathname();
-
   const [mounted, setMounted] = useState(false);
+
   useEffect(() => setMounted(true), []);
 
-  if (!mounted) {
-    return (
-      <aside className="hidden sm:flex flex-col bg-card rounded-2xl shadow-md p-3 md:p-4 fixed left-4 top-4 w-[70px] md:w-[90px] lg:w-[250px] h-[calc(100%-2rem)] z-30">
-        <div className="flex items-center justify-center lg:justify-start gap-2 pb-4">
-          <AppLogoIcon className="fill-current text-primary w-6 h-6" />
-        </div>
-      </aside>
-    );
-  }
+  if (!mounted) return null;
 
   if (!user) {
     return (
       <div className="hidden sm:flex flex-col items-center p-4 fixed top-4 left-4 z-20">
-        <Link href="/" className="p-3 rounded-full hover:bg-white/10 transition">
+        <Link href="/">
           <AppLogoIcon className="w-7 h-7 text-primary" />
         </Link>
       </div>
@@ -39,15 +31,16 @@ export function LeftSidebar() {
 
   return (
     <>
+      {/* ---------------------- Desktop Sidebar ---------------------- */}
       <aside
         className={clsx(
-          "hidden sm:flex flex-col bg-card rounded-2xl shadow-md p-3 md:p-4 fixed left-4 top-4 z-30 overflow-y-auto transition-all duration-300",
+          "hidden sm:flex flex-col bg-card rounded-2xl shadow-md p-4 fixed left-4 top-4 z-30 overflow-y-auto transition-all duration-300",
           "w-[70px] md:w-[90px] lg:w-[250px]",
           "h-[calc(100%-2rem)]"
         )}
       >
         {/* Logo */}
-        <Link href={`/home`}>
+        <Link href="/home">
           <div className="flex items-center justify-center lg:justify-start gap-2 pb-4">
             <AppLogoIcon className="fill-current text-primary w-6 h-6 md:w-8 md:h-8" />
             <h1 className="hidden lg:block font-bold text-xl">Twii</h1>
@@ -55,56 +48,52 @@ export function LeftSidebar() {
         </Link>
 
         {/* Profile */}
-        <div className={clsx(
-          "flex flex-col items-center mb-8",
-          "md:flex-col lg:flex-col"
-        )}>
-          <Link href={`/${user.username}`} className="flex flex-col items-center">
-            <Avatar className="w-10 h-10 md:w-11 md:h-11 lg:w-20 lg:h-20 mb-2 md:mb-3 lg:mb-3 ring-2 ring-white/10">
-              <AvatarImage src={user.avatarUrl} />
-              <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
-            </Avatar>
+        <Link
+          href={`/${user.username}`}
+          className="flex flex-col items-center mb-6"
+        >
+          <Avatar className="w-10 h-10 md:w-11 md:h-11 lg:w-20 lg:h-20 mb-2 md:mb-3 lg:mb-3 ring-2 ring-white/10">
+            <AvatarImage src={user.avatarUrl} />
+            <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+          </Avatar>
 
-            {/* Texto só em lg */}
-            <div className="hidden lg:flex flex-col items-center">
-              <h3 className="text-sm">{user.name}</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-300">@{user.username}</p>
-            </div>
-          </Link>
-
-          {/* Bio e stats apenas lg */}
-          <div className="hidden lg:flex flex-col items-center mt-2">
+          <div className="hidden lg:flex flex-col items-center text-center">
+            <h3 className="text-sm font-medium">{user.name}</h3>
+            <p className="text-xs text-gray-500 dark:text-gray-300">
+              @{user.username}
+            </p>
             {user.bio && (
-              <p className="text-gray-700 dark:text-gray-300 text-xs text-center leading-relaxed">
+              <p className="mt-1 text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
                 {user.bio}
               </p>
             )}
+          </div>
+        </Link>
 
-            <div className="flex gap-6 mt-4">
-              <div className="flex flex-col items-center">
-                <span>{user.Post?.length}</span>
-                <span className="text-gray-400 text-xs">Posts</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <span>{user.followers?.length}</span>
-                <span className="text-gray-400 text-xs">Seguidores</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <span>{user.following?.length}</span>
-                <span className="text-gray-400 text-xs">Seguindo</span>
-              </div>
-            </div>
+        {/* Stats */}
+        <div className="hidden lg:flex justify-between mt-4 px-4">
+          <div className="flex flex-col items-center">
+            <span className="font-semibold">{user.Post?.length}</span>
+            <span className="text-gray-400 text-xs">Posts</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="font-semibold">{user.followers?.length}</span>
+            <span className="text-gray-400 text-xs">Seguidores</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="font-semibold">{user.following?.length}</span>
+            <span className="text-gray-400 text-xs">Seguindo</span>
           </div>
         </div>
 
-        {/* Navegação */}
+        {/* Navigation */}
         <nav className="space-y-2 mt-auto">
           <Link
             href="/home"
             className={clsx(
               "flex items-center justify-center lg:justify-start gap-3 px-3 py-2.5 rounded-xl transition",
               pathname === "/home"
-                ? "bg-primary dark:text-gray-600 text-white shadow-md"
+                ? "bg-primary text-white dark:text-gray-600 shadow-md"
                 : "text-gray-400 hover:bg-white/5"
             )}
           >
@@ -117,17 +106,19 @@ export function LeftSidebar() {
             className={clsx(
               "flex items-center justify-center lg:justify-start gap-3 px-3 py-2.5 rounded-xl transition",
               pathname.includes("/settings")
-                ? "bg-primary dark:text-gray-600 text-white shadow-md"
+                ? "bg-primary text-white dark:text-gray-600 shadow-md"
                 : "text-gray-400 hover:bg-white/5"
             )}
           >
             <Settings className="w-7 h-6 shrink-0" />
-            <span className="hidden lg:inline text-sm font-medium">Configurações</span>
+            <span className="hidden lg:inline text-sm font-medium">
+              Configurações
+            </span>
           </Link>
 
           <button
             onClick={logout}
-            className="flex items-center justify-center lg:justify-start gap-3 px-3 py-2.5 rounded-xl dark:text-gray-400 text-gray-400 hover:bg-white/5 transition w-full"
+            className="flex items-center justify-center lg:justify-start gap-3 px-3 py-2.5 rounded-xl text-gray-400 hover:bg-white/5 transition w-full"
           >
             <LogOutIcon className="w-7 h-6 shrink-0" />
             <span className="hidden lg:inline text-sm font-medium">Sair</span>
@@ -135,17 +126,19 @@ export function LeftSidebar() {
         </nav>
       </aside>
 
-      {/* Bottom Tab no mobile */}
+      {/* ---------------------- Mobile Bottom Tab ---------------------- */}
       <div
         className="
-          fixed bottom-0 left-0 right-0
-          sm:hidden
-          bg-white/80 dark:bg-[#2d2d2d]/90
-          backdrop-blur-md
-          border-t border-white/10
-          flex justify-around items-center py-2
-          z-40
-        "
+    fixed bottom-0 left-0 right-0
+    sm:hidden
+    bg-white/90 dark:bg-[#2d2d2d]/90
+    backdrop-blur-lg
+    border-t border-white/10
+    flex justify-around items-center
+    py-3
+    z-40
+    pb-[env(safe-area-inset-bottom)]
+  "
       >
         <Link href="/home">
           <Home
@@ -169,7 +162,6 @@ export function LeftSidebar() {
           />
         </Link>
 
-        {/* Profile (foto sempre) */}
         <Link href={`/${user.username}`}>
           <Avatar className="w-8 h-8 ring-2 ring-white/20">
             <AvatarImage src={user.avatarUrl} />
@@ -181,6 +173,7 @@ export function LeftSidebar() {
           <LogOutIcon className="w-6 h-6 text-gray-800 dark:text-gray-100" />
         </button>
       </div>
+
     </>
   );
 }

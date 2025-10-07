@@ -60,8 +60,8 @@ export default function ProfileClient() {
   }
 
   return (
-    <div className="flex flex-col xl:flex-row justify-center w-full gap-6">
-      <main className="flex-1 flex flex-col gap-4">
+    <div className="flex flex-col xl:flex-row justify-center w-full gap-6 sm:mx-0 mx-4">
+      <main className="flex-1 flex flex-col gap-4 pb-22">
         <ProfileCard user={viewedUser} />
 
         {viewedUser.Post && viewedUser.Post.length > 0 ? (

@@ -26,10 +26,10 @@ export function MainFeed() {
   }, []);
 
   return (
-    <div className="w-full mx-auto flex flex-col">
+    <div className="w-full sm:mx-auto flex flex-col mx-4">
       {user && <CreatePostCard user={user} />}
 
-      <div className="flex flex-col gap-4 pb-10">
+      <div className="flex flex-col gap-4 pb-22">
         {posts.length > 0 ? (
           posts.map((post) => <PostCard key={post.id} {...post} />)
         ) : (
