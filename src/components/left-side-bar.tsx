@@ -17,7 +17,6 @@ export function LeftSidebar() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  // Render neutro no SSR
   if (!mounted) {
     return (
       <aside className="hidden sm:flex flex-col bg-card rounded-2xl shadow-md p-3 md:p-4 fixed left-4 top-4 w-[70px] md:w-[90px] lg:w-[250px] h-[calc(100%-2rem)] z-30">

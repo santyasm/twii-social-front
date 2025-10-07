@@ -46,13 +46,11 @@ export default function ThemeToggle() {
                         key={option.value}
                         onClick={() => setTheme(option.value as "light" | "dark" | "system")}
                         variant="ghost"
-                        className={`
-              w-24 h-8 p-0 text-sm font-medium flex items-center justify-center gap-1 transition-all
+                        className={`w-24 h-8 p-0 text-sm font-medium flex items-center justify-center gap-1 transition-all
               ${isActive
                                 ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm"
                                 : "text-gray-600 dark:text-gray-400 hover:bg-gray-300/60 dark:hover:bg-gray-700/80"
-                            }
-            `}
+                            }`}
                     >
                         <Icon
                             className={`w-4 h-4 ${isActive ? "opacity-100" : "opacity-70"
