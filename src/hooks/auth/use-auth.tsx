@@ -40,10 +40,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     try {
       await twiiApi.login(credentials);
-
-      const userData = await twiiApi.me();
-      setUser(userData);
-      localStorage.setItem("twii-user", JSON.stringify(userData));
+      await fetchCurrentUser();
 
       toast.success("Login realizado com sucesso!");
       router.push("/home");
