@@ -11,7 +11,6 @@ import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { FloatingNavBar } from "./floating-navbar";
 
-
 export function LeftSidebar() {
   const { user, logout } = useAuth();
   const pathname = usePathname();
@@ -172,11 +171,6 @@ export function LeftSidebar() {
           <LogOutIcon className="w-6 h-6 text-gray-800 dark:text-gray-100" />
         </button>
       </div> */}
-
-      <div className="sm:hidden flex">
-        <FloatingNavBar />
-      </div>
-
     </>
   );
 }
