@@ -128,20 +128,14 @@ export function LeftSidebar() {
 
       {/* ---------------------- Mobile Bottom Tab ---------------------- */}
       <div
-        className="
-    fixed bottom-0 left-0 right-0
-    sm:hidden
-    bg-white/90 dark:bg-[#2d2d2d]/90
-    backdrop-blur-lg
-    -webkit-backdrop-filter: blur(10px);
-    border-t border-white/10
-    flex justify-around items-center
-    z-40
-    pb-[calc(env(safe-area-inset-bottom,0px) + 0.5rem)]"
-        style={{
-          minHeight: '54px',
-          alignItems: 'center'
-        }}
+        className={clsx(
+          "fixed bottom-0 left-0 right-0",
+          "sm:hidden",
+          "bg-white/90 dark:bg-[#2d2d2d]/90",
+          "backdrop-blur-100px border-t border-white/10",
+          "flex justify-around items-center h-[56px] min-h-[56px]",
+          "pb-[env(safe-area-inset-bottom)]"
+        )}
       >
         <Link href="/home">
           <Home
