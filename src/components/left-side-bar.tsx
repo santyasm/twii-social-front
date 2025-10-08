@@ -134,7 +134,7 @@ export function LeftSidebar() {
           "bg-white/90 dark:bg-[#2d2d2d]/90",
           "backdrop-blur-100px border-t border-white/10",
           "flex justify-around items-center h-[56px] min-h-[56px]",
-          "pb-[env(safe-area-inset-bottom)]"
+          "!pb-[env(safe-area-inset-bottom)]"
         )}
       >
         <Link href="/home">
