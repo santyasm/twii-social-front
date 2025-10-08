@@ -10,7 +10,7 @@ import clsx from "clsx";
 import { useEffect, useState } from "react";
 
 export function FloatingNavBar() {
-    const { user, logout } = useAuth();
+    // const { user, logout } = useAuth();
     const pathname = usePathname();
 
     const [isVisible, setIsVisible] = useState(true);
@@ -34,11 +34,11 @@ export function FloatingNavBar() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    if (!isMounted || !user) {
-        return null;
-    }
+    // if (!isMounted || !user) {
+    //     return null;
+    // }
 
-    const isProfileActive = pathname === `/${user.username}`;
+    // const isProfileActive = pathname === `/${user.username}`;
 
     return (
         <nav
@@ -76,7 +76,7 @@ export function FloatingNavBar() {
                 <Settings className="w-6 h-6" />
             </Link>
 
-            <Link
+            {/* <Link
                 href={`/${user.username}`}
                 className={clsx(
                     "p-0.5 rounded-full transition-all",
@@ -88,10 +88,10 @@ export function FloatingNavBar() {
                     <AvatarImage src={user.avatarUrl} />
                     <AvatarFallback className="text-xs">{getInitials(user.name)}</AvatarFallback>
                 </Avatar>
-            </Link>
+            </Link> */}
 
             <button
-                onClick={logout}
+                // onClick={logout}
                 className="p-2 rounded-full text-gray-500 hover:text-red-500 transition-colors"
             >
                 <LogOutIcon className="w-6 h-6" />

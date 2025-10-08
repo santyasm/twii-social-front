@@ -8,9 +8,8 @@ export default function MainLayout({
 }) {
     return (
         <>
-            <div className="sm:hidden flex">
-                <FloatingNavBar />
-            </div>
+            <FloatingNavBar />
+
             <div className="min-h-screen flex justify-center bg-background text-foreground">
                 <div className="fixed ">
                     <LeftSidebar />
