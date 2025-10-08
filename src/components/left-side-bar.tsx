@@ -129,16 +129,20 @@ export function LeftSidebar() {
       {/* ---------------------- Mobile Bottom Tab ---------------------- */}
       <div
         className="
-    fixed bottom-0 left-0 right-0
+    fixed inset-x-0 bottom-0
     sm:hidden
-    bg-white/90 dark:bg-[#2d2d2d]/90
-    backdrop-blur-lg
-    border-t border-white/10
+    bg-white/95 dark:bg-[#2d2d2d]/95
+    backdrop-blur-md
+    border-t border-white/10 dark:border-gray-800/30
     flex justify-around items-center
-    py-3
-    z-40
+    z-[1000]
     pb-[env(safe-area-inset-bottom)]
+    pointer-events-auto
   "
+        style={{
+          minHeight: '54px',
+          alignItems: 'center'
+        }}
       >
         <Link href="/home">
           <Home
