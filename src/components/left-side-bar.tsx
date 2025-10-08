@@ -9,6 +9,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
+import { FloatingNavBar } from "./floating-navbar";
+
 
 export function LeftSidebar() {
   const { user, logout } = useAuth();
@@ -127,7 +129,7 @@ export function LeftSidebar() {
       </aside>
 
       {/* ---------------------- Mobile Bottom Tab ---------------------- */}
-      <div
+      {/* <div
         className={clsx(
           "fixed bottom-0 left-0 right-0",
           "sm:hidden",
@@ -169,6 +171,10 @@ export function LeftSidebar() {
         <button onClick={logout}>
           <LogOutIcon className="w-6 h-6 text-gray-800 dark:text-gray-100" />
         </button>
+      </div> */}
+
+      <div className="sm:hidden flex">
+        <FloatingNavBar />
       </div>
 
     </>
