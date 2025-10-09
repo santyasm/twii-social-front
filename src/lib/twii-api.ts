@@ -1,5 +1,6 @@
 import { User } from "@/@types/users";
 import { API_CONFIG, getApiUrl } from "./config";
+import { toast } from "sonner";
 
 interface ApiOptions extends RequestInit {
   body?: any;
@@ -26,7 +27,7 @@ async function apiFetch<T>(
 
     if (!response.ok) {
       if (response.status === 401) {
-        // apenas lança erro de sessão expirada
+        toast.info("Sessão expirada. Faça login novamente.");
         throw new Error("Sessão expirada. Faça login novamente.");
       }
 
@@ -110,4 +111,10 @@ export const twiiApi = {
       body: data,
       isFormData: true,
     }),
+
+  getFeed: (onlyFollowing?: boolean) =>
+    apiFetch(API_CONFIG.ENDPOINTS.GET_FEED(onlyFollowing), {
+      method: "GET"
+
+    })
 };

@@ -1,42 +1,49 @@
 "use client";
-
-import { Post } from "@/@types/posts";
 import { useAuth } from "@/hooks/auth/use-auth";
-import { twiiApi } from "@/lib/twii-api";
-import { useEffect, useState } from "react";
+import { useFeedPosts } from "@/hooks/posts/use-feed-posts";
 import { CreatePostCard } from "./create-post-card";
 import { PostCard } from "./post-card";
 
 export function MainFeed() {
-  const [posts, setPosts] = useState<Post[]>([]);
   const { user } = useAuth();
+  const { posts, isLoading, error } = useFeedPosts();
 
-  const fetchPosts = async () => {
-    try {
-      const response = await twiiApi.findAllPosts();
-      if (Array.isArray(response)) setPosts(response as Post[]);
-      else setPosts([]);
-    } catch {
-      console.warn("Não foi possível buscar posts.");
+  const renderFeedContent = () => {
+    if (isLoading) {
+      return (
+        <p className="text-center text-sm text-gray-400 mt-10 animate-pulse">
+          Carregando...
+        </p>
+      );
     }
-  };
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
+    if (error) {
+      return (
+        <p className="text-center text-sm text-red-500 mt-10">
+          Erro ao carregar posts.
+        </p>
+      );
+    }
+
+    if (posts.length === 0) {
+      return (
+        <p className="text-center text-sm text-gray-500 mt-10">
+          Nenhum post encontrado.
+        </p>
+      );
+    }
+
+    return posts.map((post) => (
+      <PostCard key={post.id} {...post} />
+    ));
+  };
 
   return (
     <div className="w-full sm:mx-auto flex flex-col mx-4">
       {user && <CreatePostCard user={user} />}
 
       <div className="flex flex-col gap-4 pb-22">
-        {posts.length > 0 ? (
-          posts.map((post) => <PostCard key={post.id} {...post} />)
-        ) : (
-          <p className="text-center text-sm text-gray-500 mt-10">
-            Nenhum post encontrado.
-          </p>
-        )}
+        {renderFeedContent()}
       </div>
     </div>
   );

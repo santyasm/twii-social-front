@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, LogOutIcon, Settings } from "lucide-react";
+import { Home, LogOutIcon, Settings, LogIn, Search } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useAuth } from "@/hooks/auth/use-auth";
 import { getInitials } from "@/utils/string-formatter";
@@ -8,54 +8,61 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
+import { Button } from "./ui/button";
 
 export function FloatingNavBar() {
-    // const { user, logout } = useAuth();
+    const { user, logout } = useAuth();
     const pathname = usePathname();
 
-    const [isVisible, setIsVisible] = useState(true);
+    // Removido isVisible e a lógica de scroll do useEffect
     const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
         setIsMounted(true);
-
-        const handleScroll = () => {
-            const scrollPosition = window.scrollY;
-            const windowHeight = window.innerHeight;
-            const documentHeight = document.documentElement.scrollHeight;
-
-            const isNearFooter =
-                scrollPosition + windowHeight >= documentHeight - 200;
-
-            setIsVisible(!isNearFooter);
-        };
-
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
+        // Ocultando a lógica de scroll: window.addEventListener("scroll", handleScroll)
     }, []);
 
-    // if (!isMounted || !user) {
-    //     return null;
-    // }
+    if (!isMounted) {
+        return null;
+    }
 
-    // const isProfileActive = pathname === `/${user.username}`;
+    // Configuração de classes base da barra de navegação (agora sem animação de ocultar)
+    const navClasses = clsx(
+        "fixed bottom-4 left-1/2 -translate-x-1/2 z-[9999]",
+        "sm:hidden",
+        "w-[90vw] max-w-sm",
+        "flex items-center justify-around",
+        "rounded-xl bg-card/90 shadow-2xl backdrop-blur-md",
+        "p-2"
+        // Removidas as classes de transição e visibilidade (translate-y, opacity, scale)
+    );
+
+    // ---------------------- Renderização para Usuário NÃO Logado ----------------------
+    if (!user) {
+        return (
+            <nav className={clsx(navClasses, "justify-between p-3 gap-2")}>
+                {/* Mensagem Convidativa (Copy Legal) */}
+                <p className="text-sm text-gray-700 dark:text-gray-300 truncate mr-2">
+                    Crie uma conta para ter a melhor experiência!
+                </p>
+
+                {/* Botão de Login */}
+                <Link href="/login" passHref className="flex-shrink-0">
+                    <Button className="h-8 text-sm font-semibold px-4 gap-1">
+                        <LogIn className="w-4 h-4" />
+                        Entrar
+                    </Button>
+                </Link>
+            </nav>
+        );
+    }
+
+    // ---------------------- Renderização para Usuário Logado ----------------------
+    const isProfileActive = pathname === `/${user.username}`;
 
     return (
-        <nav
-            className={clsx(
-                "fixed bottom-4 left-1/2 -translate-x-1/2 z-[9999]",
-                "sm:hidden",
-                "w-[90vw] max-w-sm",
-                "flex items-center justify-around",
-                "rounded-full bg-card/90 shadow-2xl backdrop-blur-md",
-                "p-3",
-                "transition-all duration-300 ease-out",
-                isVisible
-                    ? "translate-y-0 opacity-100 scale-100"
-                    : "translate-y-20 opacity-0 scale-95"
-            )}
-        >
-
+        <nav className={clsx(navClasses, "p-3")}>
+            {/* Home Button */}
             <Link
                 href="/home"
                 className={clsx(
@@ -66,6 +73,18 @@ export function FloatingNavBar() {
                 <Home className="w-6 h-6" />
             </Link>
 
+            {/* Search Button */}
+            <Link
+                href="/search"
+                className={clsx(
+                    "p-2 rounded-full transition-colors",
+                    pathname === "/search" ? "bg-primary text-white dark:text-gray-600" : "text-gray-500 hover:text-primary"
+                )}
+            >
+                <Search className="w-6 h-6" />
+            </Link>
+
+            {/* Settings Button */}
             <Link
                 href="/settings"
                 className={clsx(
@@ -76,7 +95,8 @@ export function FloatingNavBar() {
                 <Settings className="w-6 h-6" />
             </Link>
 
-            {/* <Link
+            {/* Profile Avatar */}
+            <Link
                 href={`/${user.username}`}
                 className={clsx(
                     "p-0.5 rounded-full transition-all",
@@ -88,10 +108,11 @@ export function FloatingNavBar() {
                     <AvatarImage src={user.avatarUrl} />
                     <AvatarFallback className="text-xs">{getInitials(user.name)}</AvatarFallback>
                 </Avatar>
-            </Link> */}
+            </Link>
 
+            {/* Logout Button */}
             <button
-                // onClick={logout}
+                onClick={logout}
                 className="p-2 rounded-full text-gray-500 hover:text-red-500 transition-colors"
             >
                 <LogOutIcon className="w-6 h-6" />

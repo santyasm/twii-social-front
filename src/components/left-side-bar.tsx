@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, LogOutIcon, Settings } from "lucide-react";
+import { Home, LogIn, LogOutIcon, Settings, UserPlus } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import AppLogoIcon from "./app-logo-icon";
 import { useAuth } from "@/hooks/auth/use-auth";
@@ -9,7 +9,32 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
-import { FloatingNavBar } from "./floating-navbar";
+import { Button } from "./ui/button";
+
+const AuthButtons = ({ isMobile = false }: { isMobile?: boolean }) => (
+  <div className={clsx("flex gap-2", isMobile ? "w-full justify-center" : "flex-col w-full px-2")}>
+    <Button asChild className="w-full font-semibold transition-colors duration-150">
+      <Link
+        href="/login"
+        className="flex items-center justify-center lg:justify-start gap-3"
+      >
+        <LogIn className="w-6 h-6 shrink-0" />
+        <span className="hidden lg:inline text-sm">Entrar</span>
+      </Link>
+    </Button>
+
+    {/* Botão REGISTRAR */}
+    <Button asChild variant="secondary" className="w-full font-semibold transition-colors duration-150">
+      <Link
+        href="/register"
+        className="flex items-center justify-center lg:justify-start gap-3"
+      >
+        <UserPlus className="w-6 h-6 shrink-0" />
+        <span className="hidden lg:inline text-sm">Registrar</span>
+      </Link>
+    </Button>
+  </div>
+);
 
 export function LeftSidebar() {
   const { user, logout } = useAuth();
@@ -22,17 +47,32 @@ export function LeftSidebar() {
 
   if (!user) {
     return (
-      <div className="hidden sm:flex flex-col items-center p-4 fixed top-4 left-4 z-20">
-        <Link href="/">
-          <AppLogoIcon className="w-7 h-7 text-primary" />
-        </Link>
-      </div>
+      <>
+        <div className="hidden sm:flex flex-col items-center justify-start p-4 fixed top-4 left-4 z-20 w-[70px] md:w-[90px] lg:w-[250px] h-[calc(100%-2rem)] bg-card rounded-2xl shadow-md transition-all duration-300">
+          <Link href="/" className="pb-4 lg:self-start self-center p-0 lg:p-2">
+            <div className="flex items-center gap-2">
+              <AppLogoIcon className="fill-current text-primary w-6 h-6 md:w-8 md:h-8" />
+              <h1 className="hidden lg:block font-bold text-xl">Twii</h1>
+            </div>
+          </Link>
+
+          <div className="mt-auto w-full">
+            <AuthButtons />
+          </div>
+        </div>
+
+        <div className="sm:hidden fixed top-4 left-4 z-20">
+          <Link href="/">
+            <AppLogoIcon className="w-7 h-7 text-primary" />
+          </Link>
+        </div>
+      </>
     );
   }
 
+  // ---------------------- CASO: Usuário LOGADO ----------------------
   return (
     <>
-      {/* ---------------------- Desktop Sidebar ---------------------- */}
       <aside
         className={clsx(
           "hidden sm:flex flex-col bg-card rounded-2xl shadow-md p-4 fixed left-4 top-4 z-30 overflow-y-auto transition-all duration-300",
@@ -40,10 +80,9 @@ export function LeftSidebar() {
           "h-[calc(100%-2rem)]"
         )}
       >
-        {/* Logo */}
         <Link href="/home">
           <div className="flex items-center justify-center lg:justify-start gap-2 pb-4">
-            <AppLogoIcon className="fill-current text-primary w-6 h-6 md:w-8 md:h-8" />
+            <AppLogoIcon className="fill-current text-primary w-6 h-6 md:w-8 md:w-8" />
             <h1 className="hidden lg:block font-bold text-xl">Twii</h1>
           </div>
         </Link>
@@ -126,51 +165,6 @@ export function LeftSidebar() {
           </button>
         </nav>
       </aside>
-
-      {/* ---------------------- Mobile Bottom Tab ---------------------- */}
-      {/* <div
-        className={clsx(
-          "fixed bottom-0 left-0 right-0",
-          "sm:hidden",
-          "bg-white/90 dark:bg-[#2d2d2d]/90",
-          "backdrop-blur-100px border-t border-white/10",
-          "flex justify-around items-center h-[56px] min-h-[56px]",
-          "!pb-[env(safe-area-inset-bottom)]"
-        )}
-      >
-        <Link href="/home">
-          <Home
-            className={clsx(
-              "w-6 h-6",
-              pathname === "/home"
-                ? "text-primary"
-                : "text-gray-800 dark:text-gray-100"
-            )}
-          />
-        </Link>
-
-        <Link href="/settings">
-          <Settings
-            className={clsx(
-              "w-6 h-6",
-              pathname === "/settings"
-                ? "text-primary"
-                : "text-gray-800 dark:text-gray-100"
-            )}
-          />
-        </Link>
-
-        <Link href={`/${user.username}`}>
-          <Avatar className="w-8 h-8 ring-2 ring-white/20">
-            <AvatarImage src={user.avatarUrl} />
-            <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
-          </Avatar>
-        </Link>
-
-        <button onClick={logout}>
-          <LogOutIcon className="w-6 h-6 text-gray-800 dark:text-gray-100" />
-        </button>
-      </div> */}
     </>
   );
 }

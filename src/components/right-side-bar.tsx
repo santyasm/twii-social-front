@@ -74,7 +74,7 @@ export function RightSidebar() {
             {users.slice(0, 5).map((user) => (
               <div key={user.id} className="flex items-center gap-3 group">
                 <Link href={`/${user.username}`}>
-                  <Avatar className="w-10 h-10 bg-gray-300">
+                  <Avatar className="w-10 h-10">
                     <AvatarImage src={user.avatarUrl} />
                     <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
                   </Avatar>
