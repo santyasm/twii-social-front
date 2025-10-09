@@ -115,6 +115,15 @@ export const twiiApi = {
   getFeed: (onlyFollowing?: boolean) =>
     apiFetch(API_CONFIG.ENDPOINTS.GET_FEED(onlyFollowing), {
       method: "GET"
+    }),
 
+  follow: (userId: string) =>
+    apiFetch(API_CONFIG.ENDPOINTS.FOLLOW(userId), {
+      method: "POST"
+    }),
+
+  unfollow: (userId: string) =>
+    apiFetch(API_CONFIG.ENDPOINTS.UNFOLLOW(userId), {
+      method: "POST"
     })
 };

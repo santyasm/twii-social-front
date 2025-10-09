@@ -8,6 +8,7 @@ import { User } from "@/@types/users";
 import ProfileCard from "@/components/profile-card";
 import { RightSidebar } from "@/components/right-side-bar";
 import { PostCard } from "@/components/post-card";
+import { useFollowActions } from "@/hooks/follow/use-follow-actions";
 
 export default function ProfileClient() {
   const { username: routeUsername } = useParams() as { username: string };
@@ -17,6 +18,16 @@ export default function ProfileClient() {
   const [isProfileLoading, setIsProfileLoading] = useState(true);
 
   const isMyProfile = currentUser?.username === routeUsername;
+
+  const isInitiallyFollowing =
+    !!currentUser &&
+    !!viewedUser &&
+    (viewedUser.followers?.some(f => f.id === currentUser.id) ?? false);
+
+  const followActions = useFollowActions({
+    userId: viewedUser?.id || '',
+    isInitiallyFollowing: isInitiallyFollowing,
+  });
 
   useEffect(() => {
     if (!routeUsername) return;
@@ -36,7 +47,7 @@ export default function ProfileClient() {
     fetchProfile();
   }, [routeUsername]);
 
-  if (isAuthLoading || isProfileLoading) {
+  if (isAuthLoading || isProfileLoading || (currentUser && !viewedUser)) {
     return (
       <div className="flex justify-center items-center min-h-[50vh]">
         <p className="text-lg text-gray-500 dark:text-gray-300">
@@ -62,7 +73,11 @@ export default function ProfileClient() {
   return (
     <div className="flex flex-col xl:flex-row justify-center w-full gap-6 sm:mx-0 mx-4">
       <main className="flex-1 flex flex-col gap-4 pb-22">
-        <ProfileCard user={viewedUser} />
+        <ProfileCard
+          user={viewedUser}
+          isMyProfile={isMyProfile}
+          followActions={isMyProfile ? undefined : followActions}
+        />
 
         {viewedUser.Post && viewedUser.Post.length > 0 ? (
           viewedUser.Post.map((post) => (

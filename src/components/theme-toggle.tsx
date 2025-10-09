@@ -34,7 +34,7 @@ export default function ThemeToggle() {
         <div
             className={`
         flex p-0.5 rounded-lg transition-colors shadow-inner
-        bg-gray-200 dark:bg-gray-800
+        border dark:border-gray-500 border-gray-300
       `}
         >
             {themeOptions.map((option) => {
@@ -48,7 +48,7 @@ export default function ThemeToggle() {
                         variant="ghost"
                         className={`w-24 h-8 p-0 text-sm font-medium flex items-center justify-center gap-1 transition-all
               ${isActive
-                                ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm"
+                                ? "bg-white bg-primary/70 text-gray-900 dark:text-white shadow-sm"
                                 : "text-gray-600 dark:text-gray-400 hover:bg-gray-300/60 dark:hover:bg-gray-700/80"
                             }`}
                     >

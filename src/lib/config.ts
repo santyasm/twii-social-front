@@ -14,7 +14,10 @@ export const API_CONFIG = {
     FIND_ALL_POSTS: "/posts",
     CREATE_POST: "/posts",
 
-    GET_FEED: (onlyFollowing?: boolean) => `/posts/feed?onlyFollowing=${onlyFollowing}`
+    GET_FEED: (onlyFollowing?: boolean) => `/posts/feed?onlyFollowing=${onlyFollowing}`,
+
+    FOLLOW: (userId: string) => `/users/${userId}/follow`,
+    UNFOLLOW: (userId: string) => `/users/${userId}/unfollow`
   },
 } as const;
 
