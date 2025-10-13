@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const [user, setUser] = useState<User | null>(() => {
     if (typeof window !== "undefined") {
-      const storedUser = localStorage.getItem("twii-user");
+      const storedUser = localStorage.getItem("twii-user:twii@0.0.1");
       return storedUser ? JSON.parse(storedUser) : null;
     }
     return null;
@@ -55,11 +55,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const userData = await twiiApi.me();
 
-      localStorage.setItem("twii-user", JSON.stringify(userData));
+      localStorage.setItem("twii-user:twii@0.0.1", JSON.stringify(userData));
 
       setUser(userData);
     } catch (error) {
-      localStorage.removeItem("twii-user");
+      console.error(error);
+      localStorage.removeItem("twii-user:twii@0.0.1");
       setUser(null);
     } finally {
       setIsLoading(false);
@@ -73,7 +74,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = async () => {
     try {
       await twiiApi.logout();
-      localStorage.removeItem("twii-user");
+      localStorage.removeItem("twii-user:twii@0.0.1");
       setUser(null);
 
       toast.success("Logout realizado com sucesso!");
