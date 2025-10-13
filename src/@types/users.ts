@@ -14,4 +14,5 @@ export interface User {
   followers: Follow[];
   following: Follow[];
   Post: Post[];
+  isFollowedByMe?: boolean;
 }

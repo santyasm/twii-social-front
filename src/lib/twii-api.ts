@@ -97,9 +97,13 @@ export const twiiApi = {
   findAllUsers: () =>
     apiFetch<User[]>(API_CONFIG.ENDPOINTS.FIND_ALL_USERS, { method: "GET" }),
 
-  findUserByUsername: (username: string) =>
+  findUserByUsername: (
+    username: string,
+    serverHeaders?: Record<string, string>
+  ) =>
     apiFetch<User>(API_CONFIG.ENDPOINTS.FIND_USER_BY_USERNAME(username), {
       method: "GET",
+      headers: serverHeaders,
     }),
 
   findAllPosts: () =>
@@ -114,16 +118,16 @@ export const twiiApi = {
 
   getFeed: (onlyFollowing?: boolean) =>
     apiFetch(API_CONFIG.ENDPOINTS.GET_FEED(onlyFollowing), {
-      method: "GET"
+      method: "GET",
     }),
 
   follow: (userId: string) =>
     apiFetch(API_CONFIG.ENDPOINTS.FOLLOW(userId), {
-      method: "POST"
+      method: "POST",
     }),
 
   unfollow: (userId: string) =>
     apiFetch(API_CONFIG.ENDPOINTS.UNFOLLOW(userId), {
-      method: "POST"
-    })
+      method: "POST",
+    }),
 };

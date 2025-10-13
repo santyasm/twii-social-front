@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import ProfileClient from "./profile-client";
-import { twiiApi } from "@/lib/twii-api";
-
+import { getCachedUserByUsername } from "@/utils/data-caching.ts";
 
 export async function generateMetadata({
   params,
@@ -11,7 +10,7 @@ export async function generateMetadata({
   const username = params.username;
 
   try {
-    const user = await twiiApi.findUserByUsername(username);
+    const user = await getCachedUserByUsername(username);
 
     if (!user) {
       return {
@@ -49,7 +48,6 @@ export async function generateMetadata({
       },
     };
   } catch (error) {
-    console.error("Erro ao gerar metadata:", error);
     return {
       title: "Erro ao carregar perfil • Twii",
       description: "Ocorreu um erro ao tentar carregar o perfil.",
@@ -58,6 +56,19 @@ export async function generateMetadata({
   }
 }
 
-export default function ProfilePage() {
-  return <ProfileClient />;
+export default async function ProfilePage({
+  params,
+}: {
+  params: { username: string };
+}) {
+  const username = params.username;
+  let userData = null;
+
+  try {
+    userData = await getCachedUserByUsername(username);
+  } catch (error) {
+    console.error("Erro ao carregar perfil para ProfilePage:", error);
+  }
+
+  return <ProfileClient initialUser={userData} />;
 }

@@ -2,52 +2,36 @@
 
 import { useAuth } from "@/hooks/auth/use-auth";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { twiiApi } from "@/lib/twii-api";
+import { useState } from "react";
 import { User } from "@/@types/users";
 import ProfileCard from "@/components/profile-card";
 import { RightSidebar } from "@/components/right-side-bar";
 import { PostCard } from "@/components/post-card";
 import { useFollowActions } from "@/hooks/follow/use-follow-actions";
 
-export default function ProfileClient() {
+interface ProfileClientProps {
+  initialUser: User | null;
+}
+
+export default function ProfileClient({ initialUser }: ProfileClientProps) {
   const { username: routeUsername } = useParams() as { username: string };
   const { user: currentUser, isLoading: isAuthLoading } = useAuth();
 
-  const [viewedUser, setViewedUser] = useState<User | null>(null);
-  const [isProfileLoading, setIsProfileLoading] = useState(true);
+  console.log(initialUser);
+
+  const [viewedUser] = useState<User | null>(initialUser);
+  const [isProfileLoading] = useState(!initialUser);
 
   const isMyProfile = currentUser?.username === routeUsername;
 
-  const isInitiallyFollowing =
-    !!currentUser &&
-    !!viewedUser &&
-    (viewedUser.followers?.some(f => f.id === currentUser.id) ?? false);
+  const isInitiallyFollowing = viewedUser?.isFollowedByMe ?? false;
 
   const followActions = useFollowActions({
-    userId: viewedUser?.id || '',
+    userId: viewedUser?.id || "",
     isInitiallyFollowing: isInitiallyFollowing,
   });
 
-  useEffect(() => {
-    if (!routeUsername) return;
-
-    const fetchProfile = async () => {
-      setIsProfileLoading(true);
-      try {
-        const userData = await twiiApi.findUserByUsername(routeUsername);
-        setViewedUser(userData);
-      } catch {
-        setViewedUser(null);
-      } finally {
-        setIsProfileLoading(false);
-      }
-    };
-
-    fetchProfile();
-  }, [routeUsername]);
-
-  if (isAuthLoading || isProfileLoading || (currentUser && !viewedUser)) {
+  if (isAuthLoading || isProfileLoading) {
     return (
       <div className="flex justify-center items-center min-h-[50vh]">
         <p className="text-lg text-gray-500 dark:text-gray-300">
