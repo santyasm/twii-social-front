@@ -3,49 +3,59 @@ import { useState, useCallback } from "react";
 import { toast } from "sonner";
 
 interface UseFollowActionsProps {
-    userId: string;
-    isInitiallyFollowing: boolean;
+  userId: string;
+  isInitiallyFollowing: boolean;
+  username: string;
 }
 
 /**
  * Hook customizado para gerenciar as ações de follow e unfollow.
  *
- * @param userId 
- * @param isInitiallyFollowing 
+ * @param userId
+ * @param isInitiallyFollowing
+ * @param username
  */
-export function useFollowActions({ userId, isInitiallyFollowing }: UseFollowActionsProps) {
-    const [isFollowing, setIsFollowing] = useState(isInitiallyFollowing);
+export function useFollowActions({
+  userId,
+  isInitiallyFollowing,
+  username,
+}: UseFollowActionsProps) {
+  const [isFollowing, setIsFollowing] = useState(isInitiallyFollowing);
 
-    const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-    const toggleFollow = useCallback(async () => {
-        if (isLoading) return;
+  const toggleFollow = useCallback(async () => {
+    if (isLoading) return;
 
-        setIsLoading(true);
-        const previousFollowingState = isFollowing;
+    setIsLoading(true);
+    const previousFollowingState = isFollowing;
 
-        setIsFollowing(!previousFollowingState);
+    setIsFollowing(!previousFollowingState);
 
-        try {
-            if (isFollowing) {
-                await twiiApi.unfollow(userId);
-                toast.success(`Você deixou de seguir o usuário.`);
-            } else {
-                await twiiApi.follow(userId);
-                toast.success(`Você começou a seguir o usuário.`);
-            }
-        } catch (error) {
-            console.error("Erro na ação de seguir/deixar de seguir:", error);
-            setIsFollowing(previousFollowingState);
-            toast.error(`Falha ao ${isFollowing ? 'deixar de seguir' : 'seguir'}. Tente novamente.`);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [userId, isFollowing, isLoading]);
+    try {
+      if (isFollowing) {
+        await twiiApi.unfollow(userId);
+        toast.success(`Você deixou de seguir ${username}.`);
+      } else {
+        await twiiApi.follow(userId);
+        toast.success(`Você começou a seguir ${username}.`);
+      }
+    } catch (error) {
+      console.error("Erro na ação de seguir/deixar de seguir:", error);
+      setIsFollowing(previousFollowingState);
+      toast.error(
+        `Falha ao ${
+          isFollowing ? "deixar de seguir" : "seguir"
+        }. Tente novamente.`
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }, [userId, isFollowing, isLoading, username]);
 
-    return {
-        isFollowing,
-        isLoading,
-        toggleFollow,
-    };
+  return {
+    isFollowing,
+    isLoading,
+    toggleFollow,
+  };
 }

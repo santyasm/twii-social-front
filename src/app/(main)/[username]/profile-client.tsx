@@ -29,6 +29,7 @@ export default function ProfileClient({ initialUser }: ProfileClientProps) {
   const followActions = useFollowActions({
     userId: viewedUser?.id || "",
     isInitiallyFollowing: isInitiallyFollowing,
+    username: viewedUser?.username || "",
   });
 
   if (isAuthLoading || isProfileLoading) {
