@@ -87,7 +87,7 @@ export function LeftSidebar() {
     <>
       <aside
         className={clsx(
-          "hidden sm:flex flex-col bg-card rounded-2xl shadow-md p-4 fixed left-4 top-4 z-30 overflow-y-auto transition-all duration-300",
+          "hidden sm:flex flex-col bg-card rounded-2xl shadow-md p-4 fixed left-4 xl:left-28 top-4 z-30 overflow-y-auto transition-all duration-300",
           "w-[70px] md:w-[90px] lg:w-[250px]",
           "h-[calc(100%-2rem)]"
         )}

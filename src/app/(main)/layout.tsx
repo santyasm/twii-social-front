@@ -10,8 +10,8 @@ export default function MainLayout({
     <>
       <FloatingNavBar />
 
-      <div className="min-h-screen flex justify-center bg-background text-foreground">
-        <div className="fixed ">
+      <div className="min-h-screen flex justify-center text-foreground bg-background mx-auto">
+        <div className="fixed">
           <LeftSidebar />
         </div>
 

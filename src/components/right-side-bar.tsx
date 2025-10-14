@@ -80,7 +80,7 @@ const UserSuggestionCard = ({
     <div className="flex items-center gap-3 group">
       <Link href={`/${user.username}`}>
         <Avatar className="w-10 h-10">
-          <AvatarImage src={user.avatarUrl} />
+          <AvatarImage src={user.avatarUrl} className="object-cover" />
           <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
         </Avatar>
       </Link>
@@ -142,7 +142,7 @@ export function RightSidebar() {
         "rounded-2xl shadow-md",
         "p-3 md:p-4",
         "w-[22vw] lg:w-[23vw]",
-        "fixed right-4 top-4",
+        "fixed right-28 top-4",
         "z-30",
         "overflow-y-auto",
         "transition-all duration-300"
