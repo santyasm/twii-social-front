@@ -12,8 +12,16 @@ import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 
 const AuthButtons = ({ isMobile = false }: { isMobile?: boolean }) => (
-  <div className={clsx("flex gap-2", isMobile ? "w-full justify-center" : "flex-col w-full px-2")}>
-    <Button asChild className="w-full font-semibold transition-colors duration-150">
+  <div
+    className={clsx(
+      "flex gap-2",
+      isMobile ? "w-full justify-center" : "flex-col w-full px-2"
+    )}
+  >
+    <Button
+      asChild
+      className="w-full font-semibold transition-colors duration-150"
+    >
       <Link
         href="/login"
         className="flex items-center justify-center lg:justify-start gap-3"
@@ -24,7 +32,11 @@ const AuthButtons = ({ isMobile = false }: { isMobile?: boolean }) => (
     </Button>
 
     {/* Botão REGISTRAR */}
-    <Button asChild variant="secondary" className="w-full font-semibold transition-colors duration-150">
+    <Button
+      asChild
+      variant="secondary"
+      className="w-full font-semibold transition-colors duration-150"
+    >
       <Link
         href="/register"
         className="flex items-center justify-center lg:justify-start gap-3"
@@ -93,7 +105,7 @@ export function LeftSidebar() {
           className="flex flex-col items-center mb-6"
         >
           <Avatar className="w-10 h-10 md:w-11 md:h-11 lg:w-20 lg:h-20 mb-2 md:mb-3 lg:mb-3 ring-2 ring-white/10">
-            <AvatarImage src={user.avatarUrl} />
+            <AvatarImage src={user.avatarUrl} className=" object-cover" />
             <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
           </Avatar>
 

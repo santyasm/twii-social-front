@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import clsx from "clsx";
 import { getInitials } from "@/utils/string-formatter";
+import Link from "next/link";
 
 interface FollowActions {
   isFollowing: boolean;
@@ -30,15 +31,14 @@ export default function ProfileCard({
   const renderActionButton = () => {
     if (isMyProfile) {
       return (
-        <button
-          onClick={() => console.log("Navegar para Edição de Perfil")}
-          className="py-1.5 px-4 rounded-full font-semibold border border-gray-300 dark:border-gray-700 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition"
-        >
-          <div className="flex items-center gap-1">
-            <Edit className="w-4 h-4" />
-            Editar Perfil
+        <Link href="/settings/profile">
+          <div className="py-1.5 px-4 rounded-full font-semibold border border-gray-300 dark:border-gray-700 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+            <div className="flex items-center gap-1">
+              <Edit className="w-4 h-4" />
+              Editar Perfil
+            </div>
           </div>
-        </button>
+        </Link>
       );
     }
     if (followActions) {

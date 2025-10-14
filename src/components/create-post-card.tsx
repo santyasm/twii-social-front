@@ -91,10 +91,11 @@ export function CreatePostCard({
     <div className="bg-card rounded-2xl p-4 mb-6 shadow-md">
       <div className="flex gap-3 mb-4">
         <Avatar className="w-10 h-10">
-          <AvatarImage src={user?.avatarUrl} className="rounded-full" />
-          <AvatarFallback>
-            {getInitials(user.name)}
-          </AvatarFallback>
+          <AvatarImage
+            src={user?.avatarUrl}
+            className="w-full h-full object-cover rounded-full"
+          />
+          <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
         </Avatar>
 
         <textarea

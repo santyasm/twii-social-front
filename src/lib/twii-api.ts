@@ -82,6 +82,13 @@ export const twiiApi = {
     return user;
   },
 
+  updateProfile: (userId: string, data: User) =>
+    apiFetch<void>(API_CONFIG.ENDPOINTS.USER_UPDATE(userId), {
+      method: "PATCH",
+      body: data,
+      isFormData: true,
+    }),
+
   verifyEmail: (token: string) =>
     apiFetch(API_CONFIG.ENDPOINTS.VERIFY_EMAIL, {
       method: "POST",

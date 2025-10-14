@@ -5,22 +5,22 @@ export const API_CONFIG = {
     LOGIN: "/auth/login",
     LOGOUT: "/auth/logout",
     ME: "/users/me",
+    USER_UPDATE: (userId: string) => `users/${userId}`,
     VERIFY_EMAIL: "/auth/verify-email",
     RESEND_VERIFICATION: "/auth/resend-verification",
     FIND_ALL_USERS: "/users",
     FIND_USER_BY_USERNAME: (username: string) => `/users/${username}`,
 
-
     FIND_ALL_POSTS: "/posts",
     CREATE_POST: "/posts",
 
-    GET_FEED: (onlyFollowing?: boolean) => `/posts/feed?onlyFollowing=${onlyFollowing}`,
+    GET_FEED: (onlyFollowing?: boolean) =>
+      `/posts/feed?onlyFollowing=${onlyFollowing}`,
 
     FOLLOW: (userId: string) => `/users/${userId}/follow`,
-    UNFOLLOW: (userId: string) => `/users/${userId}/unfollow`
+    UNFOLLOW: (userId: string) => `/users/${userId}/unfollow`,
   },
 } as const;
-
 
 export const getApiUrl = (endpoint: string) => {
   const base = API_CONFIG.BASE_URL.replace(/\/$/, "");
