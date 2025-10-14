@@ -147,4 +147,10 @@ export const twiiApi = {
     apiFetch(API_CONFIG.ENDPOINTS.UNLIKE_POST(postId), {
       method: "DELETE",
     }),
+
+  commentPost: (postId: string, data: { content: string }) =>
+    apiFetch(API_CONFIG.ENDPOINTS.COMMENT_POST(postId), {
+      method: "POST",
+      body: data,
+    }),
 };

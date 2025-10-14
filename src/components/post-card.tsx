@@ -1,11 +1,21 @@
 "use client";
 
+import { useState } from "react";
 import { Post } from "@/@types/posts";
 import { formatPostDate } from "@/utils/date-formatter";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { Heart, MessageCircle, MoreVertical } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import {
+  Heart,
+  MessageCircle,
+  MoreVertical,
+  Send,
+  Loader2,
+} from "lucide-react";
 import Link from "next/link";
 import { useLike } from "@/hooks/like/use-like";
+import { useComment } from "@/hooks/comment/use-comment";
 import { twMerge } from "tailwind-merge";
 
 const getInitials = (name: string) => {
@@ -18,14 +28,33 @@ const getInitials = (name: string) => {
 };
 
 export function PostCard(post: Post) {
-  const { isLiked, likeCount, isLoading, toggleLike } = useLike({
+  // Hook de Like (já existente)
+  const {
+    isLiked,
+    likeCount,
+    isLoading: isLiking,
+    toggleLike,
+  } = useLike({
     postId: post.id,
     initialLikes: post.likeCount,
     initialIsLiked: post.isLikedByMe ?? false,
   });
 
+  const [isCommentSectionOpen, setIsCommentSectionOpen] = useState(false);
+
+  const {
+    content,
+    setContent,
+    commentCount,
+    isLoading: isCommenting,
+    handleCommentSubmit,
+  } = useComment({
+    postId: post.id,
+    initialCommentCount: post.commentCount,
+  });
+
   return (
-    <div className="bg-card rounded-2xl p-5 shadow-md">
+    <div className="bg-card rounded-2xl p-5 shadow-md border border-border/50">
       <div className="flex items-start justify-between mb-4">
         <div className="flex gap-3">
           <Avatar className="w-10 h-10 rounded-full">
@@ -57,7 +86,6 @@ export function PostCard(post: Post) {
       <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
         {post.content}
       </p>
-
       {post.imageUrl && (
         <div className="my-4">
           <img
@@ -72,9 +100,9 @@ export function PostCard(post: Post) {
         <div className="flex gap-6">
           <button
             onClick={toggleLike}
-            disabled={isLoading}
+            disabled={isLiking}
             className={twMerge(
-              "flex items-center gap-2 transition-colors",
+              "flex items-center gap-2 transition-colors disabled:opacity-50",
               isLiked
                 ? "text-red-500 hover:text-red-400"
                 : "text-gray-400 hover:text-red-500"
@@ -89,12 +117,42 @@ export function PostCard(post: Post) {
             <span className="text-sm">{likeCount}</span>
           </button>
 
-          <button className="flex items-center gap-2 text-gray-400 hover:text-blue-400 transition-colors">
+          <button
+            onClick={() => setIsCommentSectionOpen((prev) => !prev)}
+            className="flex items-center gap-2 text-gray-400 hover:text-blue-400 transition-colors"
+          >
             <MessageCircle className="w-4 h-4" />
-            <span className="text-sm">{post.commentCount}</span>
+            <span className="text-sm">{commentCount}</span>
           </button>
         </div>
       </div>
+
+      {isCommentSectionOpen && (
+        <form
+          onSubmit={handleCommentSubmit}
+          className="flex items-start gap-2 pt-4"
+        >
+          <Textarea
+            placeholder="Adicione um comentário..."
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            className="resize-none"
+            rows={1}
+            disabled={isCommenting}
+          />
+          <Button
+            type="submit"
+            size="icon"
+            disabled={isCommenting || !content.trim()}
+          >
+            {isCommenting ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Send className="h-4 w-4" />
+            )}
+          </Button>
+        </form>
+      )}
     </div>
   );
 }
