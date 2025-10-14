@@ -64,7 +64,7 @@ export default function ProfileClient({ initialUser }: ProfileClientProps) {
 
         {viewedUser.posts && viewedUser.posts.length > 0 ? (
           viewedUser.posts.map((post) => (
-            <PostCard key={post.id} {...post} author={viewedUser} />
+            <PostCard key={post.id} post={{ ...post, author: viewedUser }} />
           ))
         ) : (
           <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-10">
