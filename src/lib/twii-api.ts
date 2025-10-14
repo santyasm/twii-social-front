@@ -1,6 +1,7 @@
 import { User } from "@/@types/users";
 import { API_CONFIG, getApiUrl } from "./config";
 import { toast } from "sonner";
+import { Post } from "@/@types/posts";
 
 interface ApiOptions extends RequestInit {
   body?: any;
@@ -115,6 +116,11 @@ export const twiiApi = {
 
   findAllPosts: () =>
     apiFetch(API_CONFIG.ENDPOINTS.FIND_ALL_POSTS, { method: "GET" }),
+
+  findPostById: (postId: string) =>
+    apiFetch<Post>(API_CONFIG.ENDPOINTS.FIND_POST_BY_ID(postId), {
+      method: "GET",
+    }),
 
   createPost: (data: FormData) =>
     apiFetch(API_CONFIG.ENDPOINTS.CREATE_POST, {

@@ -12,6 +12,7 @@ export const API_CONFIG = {
     FIND_USER_BY_USERNAME: (username: string) => `/users/${username}`,
 
     FIND_ALL_POSTS: "/posts",
+    FIND_POST_BY_ID: (postId: string) => `/posts/${postId}`,
     CREATE_POST: "/posts",
 
     GET_FEED: (onlyFollowing?: boolean) =>

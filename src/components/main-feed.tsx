@@ -33,18 +33,14 @@ export function MainFeed() {
       );
     }
 
-    return posts.map((post) => (
-      <PostCard key={post.id} {...post} />
-    ));
+    return posts.map((post) => <PostCard key={post.id} post={post} />);
   };
 
   return (
     <div className="w-full sm:mx-auto flex flex-col mx-4">
       {user && <CreatePostCard user={user} />}
 
-      <div className="flex flex-col gap-4 pb-22">
-        {renderFeedContent()}
-      </div>
+      <div className="flex flex-col gap-4 pb-22">{renderFeedContent()}</div>
     </div>
   );
 }
