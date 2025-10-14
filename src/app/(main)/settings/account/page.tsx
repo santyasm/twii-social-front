@@ -1,23 +1,29 @@
 "use client";
 
-import Link from 'next/link';
-import { ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useAuth } from '@/hooks/auth/use-auth';
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/auth/use-auth";
 
 export default function AccountSettingsPage() {
   const { user, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div className="text-muted-foreground">Carregando informações da conta...</div>;
+    return (
+      <div className="text-muted-foreground">
+        Carregando informações da conta...
+      </div>
+    );
   }
 
-  const profileUrl = user ? `/${user.username}` : '/';
+  const profileUrl = user ? `/${user.username}` : "/";
 
   return (
     <div className="space-y-8">
       <section className="space-y-4">
-        <h3 className="text-xl font-medium text-foreground">Informações básicas</h3>
+        <h3 className="text-xl font-medium text-foreground">
+          Informações básicas
+        </h3>
 
         <Link
           href={profileUrl}

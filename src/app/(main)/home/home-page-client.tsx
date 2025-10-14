@@ -5,7 +5,6 @@ import { RightSidebar } from "@/components/right-side-bar";
 
 export default function HomePageClient() {
   return (
-
     <div
       className="
       flex w-full justify-center
@@ -26,6 +25,5 @@ export default function HomePageClient() {
         <RightSidebar />
       </aside>
     </div>
-
   );
 }

@@ -125,7 +125,7 @@ export function LeftSidebar() {
         {/* Stats */}
         <div className="hidden lg:flex justify-between mt-4 px-4">
           <div className="flex flex-col items-center">
-            <span className="font-semibold">{user.Post?.length}</span>
+            <span className="font-semibold">{user.posts?.length}</span>
             <span className="text-gray-400 text-xs">Posts</span>
           </div>
           <div className="flex flex-col items-center">

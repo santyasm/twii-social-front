@@ -13,6 +13,6 @@ export interface User {
   updatedAt: string;
   followers: Follow[];
   following: Follow[];
-  Post: Post[];
+  posts: Post[];
   isFollowedByMe?: boolean;
 }

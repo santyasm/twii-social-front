@@ -26,7 +26,7 @@ export default function ProfileCard({
   const memberSince = user.createdAt
     ? format(new Date(user.createdAt), "MMMM yyyy", { locale: ptBR })
     : "Data desconhecida";
-  const postCount = user.Post?.length || 0;
+  const postCount = user.posts?.length || 0;
 
   const renderActionButton = () => {
     if (isMyProfile) {

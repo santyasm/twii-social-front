@@ -19,6 +19,9 @@ export const API_CONFIG = {
 
     FOLLOW: (userId: string) => `/users/${userId}/follow`,
     UNFOLLOW: (userId: string) => `/users/${userId}/unfollow`,
+
+    LIKE_POST: (postId: string) => `/posts/${postId}/like`,
+    UNLIKE_POST: (postId: string) => `/posts/${postId}/unlike`,
   },
 } as const;
 

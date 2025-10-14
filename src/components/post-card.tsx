@@ -5,6 +5,8 @@ import { formatPostDate } from "@/utils/date-formatter";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Heart, MessageCircle, MoreVertical } from "lucide-react";
 import Link from "next/link";
+import { useLike } from "@/hooks/like/use-like";
+import { twMerge } from "tailwind-merge";
 
 const getInitials = (name: string) => {
   return name
@@ -16,6 +18,12 @@ const getInitials = (name: string) => {
 };
 
 export function PostCard(post: Post) {
+  const { isLiked, likeCount, isLoading, toggleLike } = useLike({
+    postId: post.id,
+    initialLikes: post.likeCount,
+    initialIsLiked: post.isLikedByMe ?? false,
+  });
+
   return (
     <div className="bg-card rounded-2xl p-5 shadow-md">
       <div className="flex items-start justify-between mb-4">
@@ -46,7 +54,9 @@ export function PostCard(post: Post) {
         </button>
       </div>
 
-      <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">{post.content}</p>
+      <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
+        {post.content}
+      </p>
 
       {post.imageUrl && (
         <div className="my-4">
@@ -60,14 +70,28 @@ export function PostCard(post: Post) {
 
       <div className="flex items-center justify-between pt-4 border-t border-white/5">
         <div className="flex gap-6">
-          <button className="flex items-center gap-2 text-gray-400 hover:text-red-500 transition-colors group">
-            <Heart className="w-4 h-4 group-hover:fill-red-500" />
-            <span className="text-sm">{post.Like.length}</span>
+          <button
+            onClick={toggleLike}
+            disabled={isLoading}
+            className={twMerge(
+              "flex items-center gap-2 transition-colors",
+              isLiked
+                ? "text-red-500 hover:text-red-400"
+                : "text-gray-400 hover:text-red-500"
+            )}
+          >
+            <Heart
+              className={twMerge(
+                "w-4 h-4 transition-transform",
+                isLiked && "fill-red-500"
+              )}
+            />
+            <span className="text-sm">{likeCount}</span>
           </button>
+
           <button className="flex items-center gap-2 text-gray-400 hover:text-blue-400 transition-colors">
             <MessageCircle className="w-4 h-4" />
-
-            <span className="text-sm">{post.Comment.length}</span>
+            <span className="text-sm">{post.commentCount}</span>
           </button>
         </div>
       </div>

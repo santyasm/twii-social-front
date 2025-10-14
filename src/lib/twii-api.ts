@@ -137,4 +137,14 @@ export const twiiApi = {
     apiFetch(API_CONFIG.ENDPOINTS.UNFOLLOW(userId), {
       method: "POST",
     }),
+
+  likePost: (postId: string) =>
+    apiFetch(API_CONFIG.ENDPOINTS.LIKE_POST(postId), {
+      method: "POST",
+    }),
+
+  unlikePost: (postId: string) =>
+    apiFetch(API_CONFIG.ENDPOINTS.UNLIKE_POST(postId), {
+      method: "DELETE",
+    }),
 };

@@ -1,6 +1,5 @@
 import ThemeToggle from "@/components/theme-toggle";
 
-
 export default function ThemeSettingsPage() {
   return (
     <div className="space-y-6">
@@ -11,14 +10,15 @@ export default function ThemeSettingsPage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 rounded-lg">
         <div className="space-y-1">
           <p className="font-medium">Tema da Interface</p>
-          <p className="text-gray-400 text-sm">Altere entre claro, escuro ou use a preferência do seu sistema.</p>
+          <p className="text-gray-400 text-sm">
+            Altere entre claro, escuro ou use a preferência do seu sistema.
+          </p>
         </div>
 
         <div className="mt-4 sm:mt-0">
           <ThemeToggle />
         </div>
       </div>
-
     </div>
   );
 }

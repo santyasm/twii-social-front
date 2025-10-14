@@ -17,8 +17,6 @@ export default function ProfileClient({ initialUser }: ProfileClientProps) {
   const { username: routeUsername } = useParams() as { username: string };
   const { user: currentUser, isLoading: isAuthLoading } = useAuth();
 
-  console.log(initialUser);
-
   const [viewedUser] = useState<User | null>(initialUser);
   const [isProfileLoading] = useState(!initialUser);
 
@@ -64,8 +62,8 @@ export default function ProfileClient({ initialUser }: ProfileClientProps) {
           followActions={isMyProfile ? undefined : followActions}
         />
 
-        {viewedUser.Post && viewedUser.Post.length > 0 ? (
-          viewedUser.Post.map((post) => (
+        {viewedUser.posts && viewedUser.posts.length > 0 ? (
+          viewedUser.posts.map((post) => (
             <PostCard key={post.id} {...post} author={viewedUser} />
           ))
         ) : (
