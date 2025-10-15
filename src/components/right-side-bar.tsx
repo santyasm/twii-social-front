@@ -5,75 +5,23 @@ import { Search } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import Footer from "./footer";
 import { User } from "@/@types/users";
-import { useEffect, useState, useCallback } from "react";
+import { FormEvent, useEffect, useState, useTransition } from "react";
 import { twiiApi } from "@/lib/twii-api";
 import clsx from "clsx";
 import { getInitials } from "@/utils/string-formatter";
 import { useAuth } from "@/hooks/auth/use-auth";
-import { toast } from "sonner";
+import { FollowButton } from "./follow-button";
+import { useRouter } from "next/navigation";
 
-interface UseFollowActionsProps {
-  userId: string;
-  isInitiallyFollowing: boolean;
-  userName: string;
+interface UserSuggestionCardProps {
+  user: User;
+  currentUserId?: string;
 }
-
-const useFollowActions = ({
-  userId,
-  isInitiallyFollowing,
-  userName,
-}: UseFollowActionsProps) => {
-  const [isFollowing, setIsFollowing] = useState(isInitiallyFollowing);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const toggleFollow = useCallback(async () => {
-    if (isLoading) return;
-
-    setIsLoading(true);
-    const previousFollowingState = isFollowing;
-    setIsFollowing(!previousFollowingState);
-
-    try {
-      if (previousFollowingState) {
-        await twiiApi.unfollow(userId);
-        toast.info(`Você deixou de seguir ${userName}.`);
-      } else {
-        await twiiApi.follow(userId);
-        toast.info(`Você começou a seguir ${userName}.`);
-      }
-    } catch (error) {
-      console.error("Erro na ação de seguir/deixar de seguir:", error);
-      setIsFollowing(previousFollowingState);
-      toast.info(
-        `Falha ao ${
-          previousFollowingState ? "deixar de seguir" : "seguir"
-        } ${userName}. Tente novamente.`
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  }, [userId, isFollowing, isLoading, userName]);
-
-  return {
-    isFollowing,
-    isLoading,
-    toggleFollow,
-  };
-};
 
 const UserSuggestionCard = ({
   user,
   currentUserId,
-}: {
-  user: User;
-  currentUserId?: string;
-}) => {
-  const { isFollowing, isLoading, toggleFollow } = useFollowActions({
-    userId: user.id,
-    isInitiallyFollowing: user.isFollowedByMe || false,
-    userName: user.name,
-  });
-
+}: UserSuggestionCardProps) => {
   const showFollowButton = currentUserId !== user.id;
 
   return (
@@ -86,23 +34,15 @@ const UserSuggestionCard = ({
       </Link>
       <div className="flex-1 min-w-0">
         <p className="text-sm truncate">{user.name}</p>
-        <p className="text-gray-400 text-xs truncate">@{user?.username}</p>
+        <p className="text-gray-400 text-xs truncate">@{user.username}</p>
       </div>
+
       {showFollowButton && (
-        <button
-          className={clsx(
-            "transition-all duration-200 cursor-pointer border px-3 rounded-sm text-[10px] py-1",
-            "group-hover:opacity-100",
-            isLoading && "opacity-50 cursor-not-allowed",
-            isFollowing
-              ? "text-gray-300 border-gray-500 hover:bg-gray-500/10"
-              : "text-primary border-primary hover:bg-primary/10"
-          )}
-          onClick={toggleFollow}
-          disabled={isLoading}
-        >
-          {isLoading ? "..." : isFollowing ? "Deixar de Seguir" : "Seguir"}
-        </button>
+        <FollowButton
+          userId={user.id}
+          username={user.name}
+          isInitiallyFollowing={user.isFollowedByMe ?? false}
+        />
       )}
     </div>
   );
@@ -112,10 +52,10 @@ export function RightSidebar() {
   const { user: currentUser, isLoading: isAuthLoading } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const router = useRouter();
 
-  const suggestions = users
-    .filter((user) => user.id !== currentUser?.id && !user.isFollowedByMe)
-    .slice(0, 5);
+  const [isPending, startTransition] = useTransition();
 
   const fetchUsers = async () => {
     try {
@@ -123,7 +63,7 @@ export function RightSidebar() {
       const data = await twiiApi.findAllUsers();
       setUsers(data);
     } catch (error) {
-      console.error(error);
+      console.error("Erro ao buscar usuários:", error);
     } finally {
       setLoading(false);
     }
@@ -134,32 +74,49 @@ export function RightSidebar() {
     fetchUsers();
   }, [isAuthLoading, currentUser?.id]);
 
+  const suggestions = users
+    .filter((user) => user.id !== currentUser?.id)
+    .slice(0, 5);
+
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    const trimmedValue = inputValue.trim();
+
+    startTransition(() => {
+      if (trimmedValue) {
+        router.push(`/search?q=${trimmedValue}`);
+      } else {
+        router.push("/search");
+      }
+    });
+  };
+
   return (
     <aside
       className={clsx(
-        "hidden sm:flex flex-col",
-        "bg-card",
-        "rounded-2xl shadow-md",
-        "p-3 md:p-4",
-        "w-[22vw] lg:w-[23vw]",
-        "fixed right-28 top-4",
-        "z-30",
-        "overflow-y-auto",
-        "transition-all duration-300"
+        "hidden sm:flex flex-col bg-card rounded-2xl shadow-md p-3 md:p-4",
+        "w-[22vw] lg:w-[23vw] fixed right-28 top-4 z-30 overflow-y-auto transition-all duration-300"
       )}
     >
       <div className="rounded-2xl p-4 mb-4">
         <div className="flex items-center justify-between mb-4">
           <h3>Search</h3>
         </div>
-        <div className="relative mb-4">
+
+        <form onSubmit={handleSubmit} className="relative nb-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
           <input
             type="text"
-            placeholder="Search..."
+            id="q"
+            name="q"
+            placeholder="Buscar perfis..."
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            disabled={isPending}
             className="w-full bg-white/5 border border-white/10 rounded-lg pl-10 pr-10 py-2 text-sm text-gray-300 placeholder:text-gray-500 outline-none focus:border-white/20"
           />
-        </div>
+        </form>
+
         <div className="p-4 mb-4">
           <div className="flex items-center justify-between mb-4">
             <h3>Sugestões</h3>
@@ -168,6 +125,10 @@ export function RightSidebar() {
           <div className="space-y-3">
             {loading ? (
               <p className="text-center text-gray-500 text-sm">Carregando...</p>
+            ) : suggestions.length === 0 ? (
+              <p className="text-center text-gray-500 text-sm">
+                Nenhum usuário sugerido.
+              </p>
             ) : (
               suggestions.map((user) => (
                 <UserSuggestionCard
@@ -179,6 +140,7 @@ export function RightSidebar() {
             )}
           </div>
         </div>
+
         <Footer />
       </div>
     </aside>

@@ -30,7 +30,7 @@ export async function generateMetadata({
         title,
         description,
         type: "profile",
-        url: `https://twii.vercel.app/${user.username}`,
+        url: `https://twii.yasminsantana.fun/${user.username}`,
         images: [
           {
             url: user.avatarUrl || "/og.png",

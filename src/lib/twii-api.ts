@@ -114,6 +114,12 @@ export const twiiApi = {
       headers: serverHeaders,
     }),
 
+  searchUsers: (query: string, serverHeaders?: Record<string, string>) =>
+    apiFetch<User[]>(API_CONFIG.ENDPOINTS.SEARCH_USERS(query), {
+      method: "GET",
+      headers: serverHeaders,
+    }),
+
   findAllPosts: () =>
     apiFetch(API_CONFIG.ENDPOINTS.FIND_ALL_POSTS, { method: "GET" }),
 

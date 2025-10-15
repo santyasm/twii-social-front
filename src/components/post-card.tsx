@@ -37,14 +37,14 @@ const PostAvatar: FC<{
   name: string;
   avatarUrl?: string;
 }> = ({ username, name, avatarUrl }) => (
-  <Avatar className="w-10 h-10 rounded-full">
-    <Link href={`/${username}`}>
+  <Link href={`/${username}`}>
+    <Avatar className="w-10 h-10">
       <AvatarImage src={avatarUrl} className="w-full h-full object-cover" />
       <AvatarFallback className="w-full h-full">
         {getInitials(name)}
       </AvatarFallback>
-    </Link>
-  </Avatar>
+    </Avatar>
+  </Link>
 );
 
 const PostContent: FC<{ post: Post }> = ({ post }) => (

@@ -39,3 +39,21 @@ export const getCachedPostById = cache(
     }
   }
 );
+
+export const getCachedSearchProfiles = cache(
+  async (query: string): Promise<User[]> => {
+    const cookiesStore = cookies() as any;
+    const authToken = cookiesStore.get("auth_token")?.value;
+
+    const authHeaders: Record<string, string> | undefined = authToken
+      ? { Cookie: `auth_token=${authToken}` }
+      : undefined;
+
+    try {
+      const result = await twiiApi.searchUsers(query, authHeaders);
+      return result;
+    } catch (error) {
+      return [];
+    }
+  }
+);

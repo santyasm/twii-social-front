@@ -1,6 +1,13 @@
 "use client";
 
-import { Home, LogIn, LogOutIcon, Settings, UserPlus } from "lucide-react";
+import {
+  Home,
+  LogIn,
+  LogOutIcon,
+  Search,
+  Settings,
+  UserPlus,
+} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import AppLogoIcon from "./app-logo-icon";
 import { useAuth } from "@/hooks/auth/use-auth";
@@ -151,6 +158,19 @@ export function LeftSidebar() {
           >
             <Home className="w-7 h-6 shrink-0" />
             <span className="hidden lg:inline text-sm font-medium">Feed</span>
+          </Link>
+
+          <Link
+            href="/search"
+            className={clsx(
+              "flex items-center justify-center lg:justify-start gap-3 px-3 py-2.5 rounded-xl transition",
+              pathname.includes("/search")
+                ? "bg-primary text-white dark:text-gray-600 shadow-md"
+                : "text-gray-400 hover:bg-white/5"
+            )}
+          >
+            <Search className="w-7 h-6 shrink-0" />
+            <span className="hidden lg:inline text-sm font-medium">Buscar</span>
           </Link>
 
           <Link

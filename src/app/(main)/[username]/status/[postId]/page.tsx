@@ -4,6 +4,7 @@ import { Post } from "@/@types/posts";
 import { RightSidebar } from "@/components/right-side-bar";
 import { getCachedPostById } from "@/utils/data-caching.ts";
 import type { Metadata } from "next";
+import { twiiApi } from "@/lib/twii-api";
 
 interface PostPageProps {
   params: {
@@ -30,7 +31,7 @@ export async function generateMetadata({
   const { postId } = params;
 
   try {
-    const post = await getCachedPostById(postId);
+    const post = await twiiApi.findPostById(postId);
 
     if (!post) {
       return {
@@ -55,7 +56,7 @@ export async function generateMetadata({
         title,
         description,
         type: "article",
-        url: `https://twii.vercel.app/${post.author?.username}/status/${post.id}`,
+        url: `https://twii.yasminsantana.fun/${post.author?.username}/status/${post.id}`,
         images: [
           {
             url: imageUrl,
