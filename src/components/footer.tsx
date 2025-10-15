@@ -1,6 +1,4 @@
-const footerLinks = [
-  ["Sobre"]
-];
+const footerLinks = [[""]];
 
 export default function Footer() {
   return (

@@ -1,11 +1,9 @@
 "use client";
-import { useAuth } from "@/hooks/auth/use-auth";
 import { useFeedPosts } from "@/hooks/posts/use-feed-posts";
 import { CreatePostCard } from "./create-post-card";
 import { PostCard } from "./post-card";
 
 export function MainFeed() {
-  const { user } = useAuth();
   const { posts, isLoading, error } = useFeedPosts();
 
   const renderFeedContent = () => {
@@ -38,7 +36,7 @@ export function MainFeed() {
 
   return (
     <div className="w-full sm:mx-auto flex flex-col mx-4">
-      {user && <CreatePostCard user={user} />}
+      <CreatePostCard />
 
       <div className="flex flex-col gap-4 pb-22">{renderFeedContent()}</div>
     </div>

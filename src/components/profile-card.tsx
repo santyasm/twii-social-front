@@ -82,9 +82,7 @@ export default function ProfileCard({
       </div>
 
       <div className="p-4 relative">
-        {/* Header (Avatar + Botão) */}
         <div className="flex justify-between items-start mb-4">
-          {/* Avatar Container */}
           <div className="relative -mt-20 w-28 h-28 sm:w-32 sm:h-32 rounded-full border-4 border-card bg-gray-800 overflow-hidden shadow-lg flex-shrink-0">
             {user.avatarUrl ? (
               <Image

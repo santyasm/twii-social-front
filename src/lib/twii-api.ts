@@ -117,9 +117,10 @@ export const twiiApi = {
   findAllPosts: () =>
     apiFetch(API_CONFIG.ENDPOINTS.FIND_ALL_POSTS, { method: "GET" }),
 
-  findPostById: (postId: string) =>
+  findPostById: (postId: string, serverHeaders?: Record<string, string>) =>
     apiFetch<Post>(API_CONFIG.ENDPOINTS.FIND_POST_BY_ID(postId), {
       method: "GET",
+      headers: serverHeaders,
     }),
 
   createPost: (data: FormData) =>
@@ -158,5 +159,10 @@ export const twiiApi = {
     apiFetch(API_CONFIG.ENDPOINTS.COMMENT_POST(postId), {
       method: "POST",
       body: data,
+    }),
+
+  removePost: (postId: string) =>
+    apiFetch(API_CONFIG.ENDPOINTS.REMOVE_POST(postId), {
+      method: "DELETE",
     }),
 };

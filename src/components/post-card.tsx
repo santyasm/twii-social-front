@@ -14,10 +14,23 @@ import {
   MoreVertical,
   Send,
   Loader2,
+  Pencil,
+  Trash2,
 } from "lucide-react";
 import { useLike } from "@/hooks/like/use-like";
 import { useComment } from "@/hooks/comment/use-comment";
 import { getInitials } from "@/utils/string-formatter";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/hooks/auth/use-auth";
+import { toast } from "sonner";
+import { twiiApi } from "@/lib/twii-api";
+import { useRouter } from "next/navigation";
 
 const PostAvatar: FC<{
   username: string;
@@ -26,11 +39,10 @@ const PostAvatar: FC<{
 }> = ({ username, name, avatarUrl }) => (
   <Avatar className="w-10 h-10 rounded-full">
     <Link href={`/${username}`}>
-      <AvatarImage
-        src={avatarUrl}
-        className="w-full h-full object-cover rounded-full"
-      />
-      <AvatarFallback>{getInitials(name)}</AvatarFallback>
+      <AvatarImage src={avatarUrl} className="w-full h-full object-cover" />
+      <AvatarFallback className="w-full h-full">
+        {getInitials(name)}
+      </AvatarFallback>
     </Link>
   </Avatar>
 );
@@ -57,6 +69,10 @@ const PostContent: FC<{ post: Post }> = ({ post }) => (
 
 export const PostCard: FC<{ post: Post }> = ({ post }) => {
   const [isCommentSectionOpen, setIsCommentSectionOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const { user } = useAuth();
+  const router = useRouter();
 
   const {
     isLiked,
@@ -80,9 +96,29 @@ export const PostCard: FC<{ post: Post }> = ({ post }) => {
     initialCommentCount: post?.commentCount,
   });
 
-  if (!post) {
-    return null;
+  const isMyPost = user?.id === post?.authorId;
+
+  async function handleDeletePost() {
+    if (!confirm("Tem certeza que deseja apagar este post?")) return;
+
+    try {
+      setIsDeleting(true);
+      await twiiApi.removePost(post.id);
+      router.refresh();
+
+      toast.success("Post apagado com sucesso!");
+    } catch (error) {
+      toast.error("Erro ao apagar post.");
+    } finally {
+      setIsDeleting(false);
+    }
   }
+
+  const handleEditPost = () => {
+    toast.info("Função de editar post em desenvolvimento!");
+  };
+
+  if (!post) return null;
 
   return (
     <div className="bg-card rounded-2xl p-5 shadow-md border border-border/50">
@@ -106,13 +142,44 @@ export const PostCard: FC<{ post: Post }> = ({ post }) => {
             </p>
           </div>
         </div>
-        <button className="text-gray-400 hover:text-gray-300">
-          <MoreVertical className="w-5 h-5" />
-        </button>
+
+        {/* Menu de ações */}
+        {isMyPost && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                className="text-gray-400 hover:text-gray-300"
+                disabled={isDeleting}
+              >
+                {isDeleting ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <MoreVertical className="w-5 h-5" />
+                )}
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-40">
+              <DropdownMenuItem
+                onClick={handleEditPost}
+                className="cursor-pointer flex items-center gap-2"
+              >
+                <Pencil className="w-4 h-4" /> Editar
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={handleDeletePost}
+                className="cursor-pointer flex items-center gap-2 text-red-500 focus:text-red-600"
+              >
+                <Trash2 className="w-4 h-4" /> Apagar
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
 
       <PostContent post={post} />
 
+      {/* Ações */}
       <div className="flex items-center justify-between pt-4 border-t border-white/5">
         <div className="flex gap-6">
           <button
@@ -144,6 +211,7 @@ export const PostCard: FC<{ post: Post }> = ({ post }) => {
         </div>
       </div>
 
+      {/* Seção de comentários */}
       {isCommentSectionOpen && (
         <form
           onSubmit={handleCommentSubmit}

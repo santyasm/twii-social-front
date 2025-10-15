@@ -25,6 +25,8 @@ export const API_CONFIG = {
     UNLIKE_POST: (postId: string) => `/posts/${postId}/unlike`,
 
     COMMENT_POST: (postId: string) => `/posts/${postId}/comments`,
+
+    REMOVE_POST: (postId: string) => `/posts/${postId}`,
   },
 } as const;
 

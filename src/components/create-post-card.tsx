@@ -1,24 +1,24 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Button } from "./ui/button";
 import { Image as LImage, X } from "lucide-react";
-import { User } from "@/@types/users";
 import { twiiApi } from "@/lib/twii-api";
 import { toast } from "sonner";
 import { getInitials } from "@/utils/string-formatter";
+import { useAuth } from "@/hooks/auth/use-auth";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 const MAX_CHARS = 280;
 const WARNING_THRESHOLD = 10;
 
 export function CreatePostCard({
-  user,
   onPostCreated,
 }: {
-  user: User;
   onPostCreated?: () => void;
 }) {
+  const { user } = useAuth();
+
   const [content, setContent] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -38,6 +38,10 @@ export function CreatePostCard({
       textarea.style.height = `${textarea.scrollHeight}px`;
     }
   }, [content]);
+
+  if (!user) {
+    return null;
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
@@ -85,7 +89,7 @@ export function CreatePostCard({
   if (isWarning) counterStyle = "text-yellow-500";
   if (isOverLimit) counterStyle = "text-red-500 font-bold";
 
-  if (!user) return null;
+  if (typeof window === "undefined" || !user) return null;
 
   return (
     <div className="bg-card rounded-2xl p-4 mb-6 shadow-md">
@@ -102,8 +106,7 @@ export function CreatePostCard({
           ref={textareaRef}
           rows={1}
           placeholder="What is happening?"
-          className="flex-1 bg-transparent border-none outline-none text-gray-300 placeholder:text-gray-500 
-                     resize-none overflow-hidden h-auto pt-2"
+          className="flex-1 bg-transparent border-none outline-none text-gray-300 placeholder:text-gray-500 resize-none overflow-hidden h-auto pt-2"
           value={content}
           onChange={handleChange}
           maxLength={MAX_CHARS + 50}
