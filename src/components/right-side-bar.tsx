@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Search, Mic } from "lucide-react";
+import { Search } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import Footer from "./footer";
 import { User } from "@/@types/users";
@@ -92,7 +92,7 @@ const UserSuggestionCard = ({
         <button
           className={clsx(
             "transition-all duration-200 cursor-pointer border px-3 rounded-sm text-[10px] py-1",
-            "opacity-0 group-hover:opacity-100",
+            "group-hover:opacity-100",
             isLoading && "opacity-50 cursor-not-allowed",
             isFollowing
               ? "text-gray-300 border-gray-500 hover:bg-gray-500/10"
@@ -113,8 +113,8 @@ export function RightSidebar() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const filteredUsers = users
-    .filter((user) => user.id !== currentUser?.id)
+  const suggestions = users
+    .filter((user) => user.id !== currentUser?.id && !user.isFollowedByMe)
     .slice(0, 5);
 
   const fetchUsers = async () => {
@@ -159,23 +159,17 @@ export function RightSidebar() {
             placeholder="Search..."
             className="w-full bg-white/5 border border-white/10 rounded-lg pl-10 pr-10 py-2 text-sm text-gray-300 placeholder:text-gray-500 outline-none focus:border-white/20"
           />
-          <button className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-400">
-            <Mic className="w-4 h-4" />
-          </button>
         </div>
         <div className="p-4 mb-4">
           <div className="flex items-center justify-between mb-4">
             <h3>Sugestões</h3>
-            <button className="text-gray-400 hover:text-gray-300 text-xs">
-              Ver todos
-            </button>
           </div>
 
           <div className="space-y-3">
             {loading ? (
               <p className="text-center text-gray-500 text-sm">Carregando...</p>
             ) : (
-              filteredUsers.map((user) => (
+              suggestions.map((user) => (
                 <UserSuggestionCard
                   key={user.id}
                   user={user}
