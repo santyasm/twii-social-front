@@ -6,8 +6,6 @@ const getProfiles = async (query: string): Promise<User[] | []> => {
   try {
     const users = await getCachedSearchProfiles(query);
 
-    console.log(users);
-
     return users;
   } catch (error) {
     console.error("Erro ao buscar post:", error);

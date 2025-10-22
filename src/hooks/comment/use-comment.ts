@@ -31,8 +31,6 @@ export const useComment = ({
 
       setIsLoading(true);
 
-      console.log(user);
-
       const tempComment: Comment = {
         id: `temp-${Date.now()}`,
         content,

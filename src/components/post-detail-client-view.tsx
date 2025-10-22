@@ -43,8 +43,6 @@ export function PostDetailClientView({
 
   const updatedPost = { ...initialPost, isLikedByMe: isLiked, likeCount };
 
-  console.log(comments);
-
   return (
     <div className="space-y-6 w-full">
       <PostCard post={updatedPost} />

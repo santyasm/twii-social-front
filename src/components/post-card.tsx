@@ -31,6 +31,7 @@ import { useAuth } from "@/hooks/auth/use-auth";
 import { toast } from "sonner";
 import { twiiApi } from "@/lib/twii-api";
 import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 const PostAvatar: FC<{
   username: string;
@@ -47,25 +48,38 @@ const PostAvatar: FC<{
   </Link>
 );
 
-const PostContent: FC<{ post: Post }> = ({ post }) => (
-  <Link
-    href={`/${post?.author?.username}/status/${post.id}`}
-    className="cursor-pointer"
-  >
-    <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
-      {post.content}
-    </p>
-    {post.imageUrl && (
-      <div className="my-4">
-        <img
-          src={post.imageUrl}
-          alt="Imagem do post"
-          className="w-full max-h-96 object-cover rounded-lg"
-        />
-      </div>
-    )}
-  </Link>
-);
+const PostContent: FC<{ post: Post }> = ({ post }) => {
+  const pathname = usePathname();
+
+  const postPagePath = `/${post?.author?.username}/status/${post.id}`;
+  const photoModalPath = `${postPagePath}/photo`;
+
+  const isOnThisPostPage = pathname === postPagePath;
+
+  const imageHref = isOnThisPostPage ? photoModalPath : postPagePath;
+
+  return (
+    <div>
+      <Link href={postPagePath} className="cursor-pointer">
+        <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
+          {post.content}
+        </p>
+      </Link>
+
+      {post.imageUrl && (
+        <div className="my-4">
+          <Link href={imageHref}>
+            <img
+              src={post.imageUrl}
+              alt="Imagem do post"
+              className="w-full max-h-96 object-cover rounded-lg cursor-pointer"
+            />
+          </Link>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export const PostCard: FC<{ post: Post }> = ({ post }) => {
   const [isCommentSectionOpen, setIsCommentSectionOpen] = useState(false);
