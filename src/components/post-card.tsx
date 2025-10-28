@@ -132,6 +132,28 @@ export const PostCard: FC<{ post: Post }> = ({ post }) => {
     toast.info("Função de editar post em desenvolvimento!");
   };
 
+  async function handleSharePost() {
+    const postUrl = `${process.env.NEXT_PUBLIC_TWII_APP_URL}/${post.author.username}/status/${post.id}`;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: `${post.author.name} no Twii`,
+          text: post.content || "Veja este post no Twii!",
+          url: postUrl,
+        });
+        toast.success("Post compartilhado com sucesso!");
+      } else {
+        await navigator.clipboard.writeText(postUrl);
+        toast.info("Link do post copiado para a área de transferência!");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Não foi possível compartilhar o post.");
+    }
+  }
+
+
   if (!post) return null;
 
   return (
@@ -157,7 +179,6 @@ export const PostCard: FC<{ post: Post }> = ({ post }) => {
           </div>
         </div>
 
-        {/* Menu de ações */}
         {isMyPost && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -222,10 +243,17 @@ export const PostCard: FC<{ post: Post }> = ({ post }) => {
             <MessageCircle className="w-4 h-4" />
             <span className="text-sm">{commentCount}</span>
           </button>
+
+          <button
+            onClick={handleSharePost}
+            className="text-gray-400 hover:text-green-400 transition-colors"
+            title="Compartilhar"
+          >
+            <Send className="w-4 h-4" />
+          </button>
         </div>
       </div>
 
-      {/* Seção de comentários */}
       {isCommentSectionOpen && (
         <form
           onSubmit={handleCommentSubmit}
