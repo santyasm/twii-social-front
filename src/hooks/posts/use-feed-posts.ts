@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/auth/use-auth";
 import { twiiApi } from "@/lib/twii-api";
 import { useEffect, useState } from "react";
 
-export function useFeedPosts() {
+export function useFeedPosts(onlyFollowing: boolean = false) {
     const { user } = useAuth();
     const [posts, setPosts] = useState<Post[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -13,7 +13,9 @@ export function useFeedPosts() {
         setIsLoading(true);
         setError(null);
         try {
-            const apiCall = user ? twiiApi.getFeed() : twiiApi.findAllPosts();
+            const apiCall = user
+                ? twiiApi.getFeed(onlyFollowing)
+                : twiiApi.findAllPosts();
             const response = await apiCall;
 
             if (Array.isArray(response)) {
@@ -22,7 +24,9 @@ export function useFeedPosts() {
                 setPosts([]);
             }
         } catch (err) {
-            setError(err instanceof Error ? err : new Error("Ocorreu um erro desconhecido."));
+            setError(
+                err instanceof Error ? err : new Error("Ocorreu um erro desconhecido.")
+            );
             setPosts([]);
         } finally {
             setIsLoading(false);
@@ -31,7 +35,6 @@ export function useFeedPosts() {
 
     useEffect(() => {
         fetchPosts();
-    }, [user]);
-
+    }, [user, onlyFollowing]);
     return { posts, isLoading, error, refetch: fetchPosts };
 }
