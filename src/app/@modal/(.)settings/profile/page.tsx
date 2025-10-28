@@ -30,6 +30,8 @@ export default function ProfileSettingsModal() {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGeneratingBio, setIsGeneratingBio] = useState(false);
+
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -138,6 +140,37 @@ export default function ProfileSettingsModal() {
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
                 />
+
+                <Button
+                  type="button"
+                  variant="secondary"
+                  disabled={isGeneratingBio}
+                  onClick={async () => {
+                    try {
+                      setIsGeneratingBio(true);
+                      const res = await fetch("/api/generate-bio", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ name, username: user?.username }),
+                      });
+                      const data = await res.json();
+                      if (data.bio) {
+                        setBio(data.bio);
+                        toast.success("Bio gerada com sucesso!");
+                      } else {
+                        toast.error("Não foi possível gerar a bio.");
+                      }
+                    } catch {
+                      toast.error("Erro ao gerar bio.");
+                    } finally {
+                      setIsGeneratingBio(false);
+                    }
+                  }}
+                >
+                  {isGeneratingBio ? <Loader2 className="w-4 h-4 animate-spin" /> : "Gerar bio com IA"}
+                </Button>
+
+
               </div>
             </div>
 
