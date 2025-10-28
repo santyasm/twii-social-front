@@ -7,9 +7,6 @@ const groq = new Groq({
 
 export async function POST(req: Request) {
     try {
-
-        console.log("API KEY:", process.env.GROQ_API_KEY ? "OK" : "MISSING");
-
         const { name, username } = await req.json();
 
         if (!name || !username) {
