@@ -7,7 +7,7 @@ const groq = new Groq({
 
 export async function POST(req: Request) {
     try {
-        const { name, username } = await req.json();
+        const { name, username, currentBio } = await req.json();
 
         if (!name || !username) {
             return NextResponse.json(
@@ -16,13 +16,23 @@ export async function POST(req: Request) {
             );
         }
 
-        const prompt = `
-      Gere uma bio curta e criativa (máximo 150 caracteres) para um perfil social.
+        const prompt = currentBio
+            ? `
+      Gere **uma única bio curta e criativa**, com **máximo 150 caracteres**, para um perfil social,
+      inspirada nesta bio existente: "${currentBio}".
       Nome: ${name}
       Username: ${username}
-      Se não souber o gênero, mantenha um tom neutro.
-      Seja simpático, humano e autêntico.
-    `;
+      - Sem explicações, sem múltiplas opções, apenas o texto da bio.
+      - Mantenha tom neutro e simpático, sem referências exageradas ou repetitivas.
+      `
+            : `
+      Gere **uma única bio curta e criativa**, com **máximo 150 caracteres**, para um perfil social.
+      Nome: ${name}
+      Username: ${username}
+      - Sem explicações, sem múltiplas opções, apenas o texto da bio.
+      - Mantenha tom neutro e simpático.
+      `;
+
 
         const response = await groq.chat.completions.create({
             model: "llama-3.1-8b-instant",

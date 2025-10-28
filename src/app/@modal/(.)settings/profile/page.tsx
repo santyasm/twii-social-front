@@ -151,7 +151,7 @@ export default function ProfileSettingsModal() {
                       const res = await fetch("/api/generate-bio", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ name, username: user?.username }),
+                        body: JSON.stringify({ name, username: user?.username, currentBio: user?.bio }),
                       });
                       const data = await res.json();
                       if (data.bio) {
