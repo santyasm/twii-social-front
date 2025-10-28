@@ -11,6 +11,8 @@ export const API_CONFIG = {
     FIND_ALL_USERS: "/users",
     FIND_USER_BY_USERNAME: (username: string) => `/users/${username}`,
 
+    DELETE_USER: (userId: string) => `/users/${userId}`,
+
     SEARCH_USERS: (query: string) => `/users/search?q=${query}`,
 
     FIND_ALL_POSTS: "/posts",

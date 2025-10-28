@@ -102,6 +102,11 @@ export const twiiApi = {
       body: { email },
     }),
 
+  deleteUser: (userId: string) =>
+    apiFetch(API_CONFIG.ENDPOINTS.DELETE_USER(userId), {
+      method: "DELETE",
+    }),
+
   findAllUsers: () =>
     apiFetch<User[]>(API_CONFIG.ENDPOINTS.FIND_ALL_USERS, { method: "GET" }),
 
