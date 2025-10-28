@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Camera, Loader2 } from "lucide-react";
+import { Camera, Loader2, Sparkles } from "lucide-react";
 import { useAuth } from "@/hooks/auth/use-auth";
 import { twiiApi } from "@/lib/twii-api";
 import { toast } from "sonner";
@@ -167,8 +167,14 @@ export default function ProfileSettingsModal() {
                     }
                   }}
                 >
-                  {isGeneratingBio ? <Loader2 className="w-4 h-4 animate-spin" /> : "Gerar bio com IA"}
-                </Button>
+                  {isGeneratingBio ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="w-4 h-4" />
+                      Gerar bio com IA
+                    </div>
+                  )}                </Button>
 
 
               </div>
