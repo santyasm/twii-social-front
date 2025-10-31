@@ -201,4 +201,6 @@ Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou enviar
 
 <div align="center">
   <p>Desenvolvido com 💚 por Yasmin Santana</p>
+
+[LinkedIn](https://www.linkedin.com/in/yasmin-santana-santos/) [GitHub](https://github.com/santyasm)
 </div>
